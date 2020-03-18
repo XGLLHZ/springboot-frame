@@ -2,7 +2,7 @@ package org.huangzi.main.common.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Data
 @Accessors(chain = true)
 //@TableName("bus_trade")
-public class OrderEntity extends BaseEntityUtil implements Serializable {
+public class OrderEntity extends BaseEntity implements Serializable {
 
     //@TableId(type = IdType.AUTO)
     //private Long id;   //主键

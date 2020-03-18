@@ -3,7 +3,7 @@ package org.huangzi.main.web.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 @TableName("bus_department")
-public class DepartmentEntity extends BaseEntityUtil implements Serializable {
+public class DepartmentEntity extends BaseEntity implements Serializable {
 
     private Integer parentId;   //上级部门 id
 

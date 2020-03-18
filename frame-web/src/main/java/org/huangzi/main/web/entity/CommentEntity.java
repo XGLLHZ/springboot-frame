@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @TableName("bus_comment")
-public class CommentEntity extends BaseEntityUtil implements Serializable {
+public class CommentEntity extends BaseEntity implements Serializable {
 
     private Integer blogId;   //博客 id
 

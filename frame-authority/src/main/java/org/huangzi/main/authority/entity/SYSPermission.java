@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @TableName("sys_permission")
-public class SYSPermission extends BaseEntityUtil implements Serializable {
+public class SYSPermission extends BaseEntity implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;   //权限主键

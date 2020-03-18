@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +25,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @TableName("sys_user")
-public class SYSUser extends BaseEntityUtil implements UserDetails, Serializable {
+public class SYSUser extends BaseEntity implements UserDetails, Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;   //主键

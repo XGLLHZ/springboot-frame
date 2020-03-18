@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @Data
 @Accessors(chain = true)
 @TableName("sys_token")
-public class SYSToken extends BaseEntityUtil implements Serializable {
+public class SYSToken extends BaseEntity implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;   //主键

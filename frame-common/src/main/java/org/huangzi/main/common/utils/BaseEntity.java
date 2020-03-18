@@ -17,7 +17,7 @@ import java.sql.Timestamp;
  */
 @Data
 @Accessors(chain = true)
-public class BaseEntityUtil implements Serializable {
+public class BaseEntity implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;   //主键

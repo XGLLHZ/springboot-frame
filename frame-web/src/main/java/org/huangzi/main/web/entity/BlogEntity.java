@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 @TableName("bus_blog")
-public class BlogEntity extends BaseEntityUtil implements Serializable {
+public class BlogEntity extends BaseEntity implements Serializable {
 
     @Excel(name = "文章标题", width = 25, orderNum = "0")
     private String blogTitle;   //标题

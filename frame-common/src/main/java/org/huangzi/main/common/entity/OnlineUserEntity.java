@@ -2,7 +2,7 @@ package org.huangzi.main.common.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 
 /**
  * @author: XGLLHZ
@@ -11,7 +11,7 @@ import org.huangzi.main.common.utils.BaseEntityUtil;
  */
 @Data
 @Accessors(chain = true)
-public class OnlineUserEntity extends BaseEntityUtil {
+public class OnlineUserEntity extends BaseEntity {
 
     private Integer id;   //用户 id
 

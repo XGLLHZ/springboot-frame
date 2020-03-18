@@ -3,7 +3,7 @@ package org.huangzi.main.web.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.huangzi.main.common.utils.BaseEntityUtil;
+import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 @TableName("bus_user")
-public class UserEntity extends BaseEntityUtil implements Serializable {
+public class UserEntity extends BaseEntity implements Serializable {
 
     private String userAccount;   //账号
 
