@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.huangzi.main.common.mapper.LogMapper">
+
+    <!--获取数据列表-->
+    <select id="list" resultType="LogEntity">
+        select
+            *
+        from sys_log log
+        where log.delete_flag = 0
+
+        <if test = " condition.logType != null and condition.logType != '' ">
+            and log.log_type = #{condition.logType}
+        </if>
+
+    </select>
+
+    <!-- 获取数据总数 -->
+    <select id="total" resultType="Integer">
+        select
+            count(*)
+        from sys_log log
+        where log.delete_flag = 0
+
+        <if test = " condition.logType != null and condition.logType != '' ">
+            and log.log_type = #{condition.logType}
+        </if>
+
+    </select>
+
+</mapper>
+
+
+
+
+
+

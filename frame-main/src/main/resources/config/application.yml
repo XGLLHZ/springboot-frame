@@ -1,0 +1,64 @@
+######################## spring 相关配置 ########################
+spring:
+  application:
+    name: springboot-frame
+  profiles:
+    active: dev   #多环境配置
+  http:   #http配置
+    encoding:
+      enabled: true
+      charset: utf-8
+      force: true
+  datasource:
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+      max-lifetime: 30000
+      connection-test-query: select 1
+  main:
+    allow-bean-definition-overriding: true
+  redis:   #redis数据库配置
+    database: 0   #数据库索引，默认为0
+    host: localhost   #地址
+    port: 6379   #端口号，默认为6379
+    password:    #密码，默认为空
+    jedis:
+      pool:
+        max-active: 8   #连接池最大连接数（负值表示没有限制）
+        max-wait: -1   #连接池最大阻塞时间（复制表示没有限制）
+        max-idle: 8   #连接池中的最大空闲连接
+        min-idle: 0   #连接池中的最小空闲连接
+    timeout: 5000   #连接超时时间（毫秒）
+
+######################## tomcat 相关配置 ########################
+server:   #服务配置
+  port: 8081   #端口号
+  servlet:
+    context-path: /api
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000   #tomcat最大线程数
+    min-spare-threads: 50   #tomcat启动时最小备用线程数
+  netty:
+    connection-timeout: 5000
+
+######################## mybatis plus 相关配置 ########################
+mybatis-plus:   #mybatisplus配置s
+  mapper-locations: classpath*:mapper/*.xml   #多模块项目下，扫描 xml 文件时用 classpath*（指扫描多个 jar 下的 resources 文件）
+  type-aliases-package: org.huangzi.main   #实体扫描（有待测试）
+  global-config:
+    id-type: 1   #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    db-column-underline: true   #驼峰下划线转换
+    logic-delete-value: 1   #逻辑删除
+    logic-not-delete-value: 0
+    refresh-mapper: true   #刷新mapper调试神器
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    jdbc-type-for-null: 'null'   #配置JdbcTypeForNull, oracle数据库必须配置
+
+################# 日志打印 sql ##################
+logging:
+  level:
+    org.huangzi.main.web : debug
+

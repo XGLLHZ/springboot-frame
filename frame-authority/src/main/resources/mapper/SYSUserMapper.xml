@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.huangzi.main.authority.mapper.SYSUserMapper">
+
+    <!--获取数据列表-->
+    <select id="list" resultType="SYSUser">
+        select
+          sysUser.id,
+          sysUser.username,
+          sysUser.password,
+          sysUser.delete_flag,
+          sysUser.create_time,
+          sysUser.update_time
+        from sys_user sysUser
+        where sysUser.delete_flag = 0
+
+        <if test=" condition.username != null and condition.username != '' ">
+            and sysUser.username like '%${ condition.username }%'
+        </if>
+
+    </select>
+
+    <!--获取数据总数-->
+    <select id="total" resultType="Integer">
+        select
+          count(*)
+        from sys_user sysUser
+        where sysUser.delete_flag = 0
+    </select>
+
+    <!--根据用户id获取用户角色列表-->
+    <select id="userRoleList" resultType="SYSRole">
+        select
+          sysRole.id,
+          sysRole.role_namey,
+          sysRole.role_namez
+        from sys_user sysUser
+        left join sys_user_role userRole
+        on sysUser.id = userRole.user_id
+        and userRole.delete_flag = 0
+        left join sys_role sysRole
+        on userRole.role_id = sysRole.id
+        and sysRole.delete_flag = 0
+        where sysUser.delete_flag = 0
+        and sysUser.id = #{ condition }
+    </select>
+
+</mapper>

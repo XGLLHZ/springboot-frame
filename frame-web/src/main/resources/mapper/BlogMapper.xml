@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.huangzi.main.web.mapper.BlogMapper">
+
+    <!--获取数据列表-->
+    <select id="getList" resultType="BlogEntity">
+        select
+        *
+        from bus_blog blog
+        where blog.delete_flag = 0
+
+        <if test = " condition.blogTitle != null and condition.blogTitle != '' ">
+            and blog.blog_title like #{ condition.blogTitle }
+        </if>
+
+        <if test = " condition.blogAuthor != null and condition.blogAuthor != '' ">
+            <bind name="blogAuthor" value="'%' + condition.blogAuthor + '%'"/>
+            and blog.blog_author like #{ blogAuthor }
+        </if>
+
+        <if test = " condition.blogType != null and condition.blogType != '' ">
+            and blog.blog_type = #{ condition.blogType }
+        </if>
+
+        <if test = " condition.blogLabel != null and condition.blogLabel != '' ">
+            <bind name="blogLabel" value="'%' + condition.blogLabel + '%'"/>
+            and blog.blog_label like #{ blogLabel }
+        </if>
+
+        <if test = " condition.blogStatus != null and condition.blogStatus != '' ">
+            and blog.blog_status  = #{ condition.blogStatus }
+        </if>
+
+    </select>
+
+    <!-- 获取数据总数 -->
+    <select id="getTotal" resultType="Integer">
+        select
+            count(*)
+        from bus_blog blog
+        where blog.delete_flag = 0
+
+        <if test = " condition.blogTitle != null and condition.blogTitle != '' ">
+            <bind name="blogTitle" value="'%' + condition.blogTitle + '%'"/>
+            and blog.blog_title like #{ blogTitle }
+        </if>
+
+        <if test = " condition.blogAuthor != null and condition.blogAuthor != '' ">
+            <bind name="blogAuthor" value="'%' + condition.blogAuthor + '%'"/>
+            and blog.blog_author like #{ blogAuthor }
+        </if>
+
+        <if test = " condition.blogType != null and condition.blogType != '' ">
+            and blog.blog_type = #{ condition.blogType }
+        </if>
+
+        <if test = " condition.blogLabel != null and condition.blogLabel != '' ">
+            <bind name="blogLabel" value="'%' + condition.blogLabel + '%'"/>
+            and blog.blog_label like #{ blogLabel }
+        </if>
+
+        <if test = " condition.blogStatus != null and condition.blogStatus != '' ">
+            and blog.blog_status  = #{ condition.blogStatus }
+        </if>
+
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+

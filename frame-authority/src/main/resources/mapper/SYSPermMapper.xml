@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.huangzi.main.authority.mapper.SYSPermMapper">
+
+    <!--获取数据列表-->
+    <select id="list" resultType="SYSPermission">
+        select
+        sysPerm.id,
+        sysPerm.parent_id,
+        sysPerm.perm_name,
+        sysPerm.perm_url,
+        sysPerm.delete_flag,
+        sysPerm.create_time,
+        sysPerm.update_time
+        from sys_permission sysPerm
+        where sysPerm.delete_flag = 0
+
+        <if test=" condition.permName != null and condition.permName != '' ">
+            and ( sysPerm.perm_name like '%${ condition.permName }%' or sysPerm.perm_url like '%${ condition.permName }%' )
+        </if>
+
+    </select>
+
+    <!--获取数据总数-->
+    <select id="total" resultType="Integer">
+        select
+          count(*)
+        from sys_permission sysPerm
+        where sysPerm.delete_flag = 0
+    </select>
+
+    <!--获取所有权限及其对应的角色-->
+    <select id="allUrlRole" resultMap="BaseResultMap">
+        select
+          perm.id,
+          perm.perm_url,
+          sr.id as role_id,
+          sr.role_namey as role_namey
+        from sys_permission perm
+        left join sys_perm_role spr
+        on spr.perm_id = perm.id and spr.delete_flag = 0
+        left join sys_role sr
+        on sr.id = spr.role_id and sr.delete_flag = 0
+        where perm.delete_flag = 0
+    </select>
+
+    <!--根据url获取详情-->
+    <select id="getByUrl" resultType="SYSPermission">
+        select
+        sysPerm.id,
+        sysPerm.parent_id,
+        sysPerm.perm_name,
+        sysPerm.perm_url,
+        sysPerm.delete_flag,
+        sysPerm.create_time,
+        sysPerm.update_time
+        from sys_permission sysPerm
+        where sysPerm.delete_flag = 0
+        and sysPerm.perm_url = #{ condition }
+    </select>
+
+    <!--这我也不知道是什么原理，总之就是这个做法好牛逼哦-->
+    <resultMap id="BaseResultMap" type="org.huangzi.main.authority.entity.SYSPermission">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="perm_url" property="permUrl" jdbcType="VARCHAR"/>
+        <collection property="roles" ofType="org.huangzi.main.authority.entity.SYSRole">
+            <id column="role_id" property="id"/>
+            <result column="role_namey" property="roleNamey"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAllPerm" resultMap="AllMap">
+        select
+          perm.id,
+          perm.perm_url
+        from sys_permission perm
+        where perm.delete_flag = 0
+    </select>
+
+    <resultMap id="AllMap" type="org.huangzi.main.authority.entity.SYSPermission">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="perm_url" property="permUrl" jdbcType="VARCHAR"/>
+        <collection property="childrenList" ofType="org.huangzi.main.authority.entity.SYSPermission">
+            <id column="parent_id" property="id"/>
+            <result column="perm_url" property="permUrl"/>
+        </collection>
+    </resultMap>
+
+</mapper>
+
+
+
+

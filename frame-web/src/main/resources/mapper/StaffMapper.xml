@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.huangzi.main.web.mapper.StaffMapper">
+
+    <!--获取数据列表-->
+    <select id="list" resultType="StaffEntity">
+        select
+        *
+        from bus_staff staff
+        where staff.delete_flag = 0
+
+        <if test = " condition.staffName != null and condition.staffName != '' ">
+            and staff.staff_name like '%{ condition.staffName }%'
+        </if>
+
+        <if test = " condition.departmentId != null and condition.departmentId != '' ">
+            and staff.department_id like '{ condition.departmentId }'
+        </if>
+
+        <if test = " condition.postId != null and condition.postId != '' ">
+            and staff.post_id like '{ condition.postId }'
+        </if>
+
+    </select>
+
+    <!-- 获取数据总数 -->
+    <select id="total" resultType="Integer">
+        select
+            count(*)
+        from bus_staff staff
+        where staff.delete_flag = 0
+    </select>
+
+</mapper>
+
+
+
+
+
+

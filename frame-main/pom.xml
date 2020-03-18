@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--  继承父工程 frame-->
+    <parent>
+        <artifactId>frame</artifactId>
+        <groupId>org.huangzi</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>main</artifactId>
+    <name>main</name>
+    <description>启动模块</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <!-- 权限模块 -->
+        <dependency>
+            <groupId>org.huangzi</groupId>
+            <artifactId>authority</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- 公共模块 -->
+        <dependency>
+            <groupId>org.huangzi</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- mp 模块 -->
+        <dependency>
+            <groupId>org.huangzi</groupId>
+            <artifactId>mp</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- web 模块 -->
+        <dependency>
+            <groupId>org.huangzi</groupId>
+            <artifactId>web</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 指定该类为全局唯一入口 -->
+                    <mainClass>org.huangzi.main.MainApplication</mainClass>
+                    <layout>ZIP</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!--可以把依赖的包都打包到生成的Jar包中-->
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
