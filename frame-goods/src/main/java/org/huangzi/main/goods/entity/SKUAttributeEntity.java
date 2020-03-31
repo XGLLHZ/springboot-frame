@@ -10,15 +10,17 @@ import java.io.Serializable;
 /**
  * @author: XGLLHZ
  * @date: 2020/3/18 下午10:38
- * @description: sku-属性-选项 实体类
+ * @description: sku-属性-值 实体类
  */
 @Data
 @Accessors(chain = true)
-@TableName("goods_sku_attribute_option")
-public class SKUAttributeOptionEntity extends BaseEntity implements Serializable {
+@TableName("goods_sku_attribute")
+public class SKUAttributeEntity extends BaseEntity implements Serializable {
 
     private Integer skuId;   //sku id
 
-    private Integer attributeOptionId;   //属性选项 id
+    private Integer attributeId;   //属性 id
+
+    private Integer attributeValueId;   //属性值 id
 
 }

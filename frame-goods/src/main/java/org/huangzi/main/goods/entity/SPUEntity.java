@@ -2,6 +2,7 @@ package org.huangzi.main.goods.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.huangzi.main.common.utils.BaseEntity;
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 @TableName("good_spu")
 public class SPUEntity extends BaseEntity implements Serializable {
 
