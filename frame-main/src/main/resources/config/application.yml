@@ -32,7 +32,7 @@ spring:
 
 ######################## tomcat 相关配置 ########################
 server:   #服务配置
-  port: 8081   #端口号
+  port: 8082   #端口号
   servlet:
     context-path: /api
   tomcat:

@@ -87,13 +87,9 @@ public class ConstConfig {
     public static final Integer RE_NO_EXIST_ERROR_CODE = 111;
     public static final String RE_NO_EXIST_ERROR_MESSAGE = "数据不存在！";
 
-    //部门代码已存在
-    public static final Integer RE_DEPART_CODE_ALREADY_EXIST_ERROR_CODE = 112;
-    public static final String RE_DEPART_CODE_ALREADY_EXIST_ERROR_MESSAGE = "部门代码已存在！";
-
-    //岗位代码已存在
-    public static final Integer RE_POST_CODE_ALREADY_EXIST_ERROR_CODE = 113;
-    public static final String RE_POST_CODE_ALREADY_EXIST_ERROR_MESSAGE = "岗位代码已存在！";
+    //编码已存在
+    public static final Integer RE_CODE_ALREADY_EXIST_ERROR_CODE = 112;
+    public static final String RE_CODE_ALREADY_EXIST_ERROR_MESSAGE = "编码已存在！";
 
     //部门不存在
     public static final Integer RE_DEPARTMENT_NO_EXIST_ERROR_CODE = 114;
@@ -106,5 +102,9 @@ public class ConstConfig {
     //删除字典
     public static final Integer RE_DELETE_DICT_ERROR_CODE = 116;
     public static final String RE_DELETE_DICT_ERROR_MESSAGE = "请先删除字典详情！";
+
+    //删除-存在子级别
+    public static final Integer RE_EXIST_CHILDREN_CODE = 117;
+    public static final String RE_EXIST_CHILDREN_MESSAGE = "此项存在子级，不能删除！";
 
 }

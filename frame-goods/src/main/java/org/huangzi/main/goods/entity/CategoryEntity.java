@@ -1,11 +1,13 @@
 package org.huangzi.main.goods.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author: XGLLHZ
@@ -22,5 +24,8 @@ public class CategoryEntity extends BaseEntity implements Serializable {
     private String categoryCode;   //分类编码
 
     private String categoryName;   //分类名称
+
+    @TableField(exist = false)
+    private List<CategoryEntity> childrenList;   //子列表
 
 }

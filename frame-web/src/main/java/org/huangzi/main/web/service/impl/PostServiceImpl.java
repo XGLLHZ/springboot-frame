@@ -66,8 +66,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity> impleme
                 .eq("delete_flag", 0)
                 .eq("post_code", postEntity.getPostCode()));
         if (postEntity1 != null) {
-            return new APIResponse(ConstConfig.RE_POST_CODE_ALREADY_EXIST_ERROR_CODE,
-                    ConstConfig.RE_POST_CODE_ALREADY_EXIST_ERROR_MESSAGE);
+            return new APIResponse(ConstConfig.RE_CODE_ALREADY_EXIST_ERROR_CODE,
+                    ConstConfig.RE_CODE_ALREADY_EXIST_ERROR_MESSAGE);
         }
         DepartmentEntity departmentEntity = departmentMapper.selectById(postEntity.getParentId());
         if (departmentEntity == null) {
@@ -104,8 +104,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity> impleme
                 .eq("delete_flag", 0)
                 .eq("post_code", postEntity.getPostCode()));
         if (postEntity2 != null) {
-            return new APIResponse(ConstConfig.RE_POST_CODE_ALREADY_EXIST_ERROR_CODE,
-                    ConstConfig.RE_POST_CODE_ALREADY_EXIST_ERROR_MESSAGE);
+            return new APIResponse(ConstConfig.RE_CODE_ALREADY_EXIST_ERROR_CODE,
+                    ConstConfig.RE_CODE_ALREADY_EXIST_ERROR_MESSAGE);
         }
         DepartmentEntity departmentEntity = departmentMapper.selectById(postEntity.getParentId());
         if (departmentEntity == null) {

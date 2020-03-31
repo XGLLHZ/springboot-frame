@@ -47,6 +47,13 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- goods 商品模块 -->
+        <dependency>
+            <groupId>org.huangzi</groupId>
+            <artifactId>goods</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>

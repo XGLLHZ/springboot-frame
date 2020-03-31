@@ -61,8 +61,8 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
                 .eq("delete_flag", 0)
                 .eq("department_code", departmentEntity.getDepartmentCode()));
         if (departmentEntity1 != null) {
-            return new APIResponse(ConstConfig.RE_DEPART_CODE_ALREADY_EXIST_ERROR_CODE,
-                    ConstConfig.RE_DEPART_CODE_ALREADY_EXIST_ERROR_MESSAGE);
+            return new APIResponse(ConstConfig.RE_CODE_ALREADY_EXIST_ERROR_CODE,
+                    ConstConfig.RE_CODE_ALREADY_EXIST_ERROR_MESSAGE);
         }
         Integer res = departmentMapper.insert(departmentEntity);
         if (res < 0) {
@@ -91,8 +91,8 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
                 .eq("delete_flag", 0)
                 .eq("department_code", departmentEntity.getDepartmentCode()));
         if (departmentEntity1 != null) {
-            return new APIResponse(ConstConfig.RE_DEPART_CODE_ALREADY_EXIST_ERROR_CODE,
-                    ConstConfig.RE_DEPART_CODE_ALREADY_EXIST_ERROR_MESSAGE);
+            return new APIResponse(ConstConfig.RE_CODE_ALREADY_EXIST_ERROR_CODE,
+                    ConstConfig.RE_CODE_ALREADY_EXIST_ERROR_MESSAGE);
         }
         Integer res = departmentMapper.updateById(departmentEntity);
         if (res < 0) {

@@ -2,6 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.huangzi.main.goods.mapper.BrandMapper">
 
+    <!-- 列表 -->
+    <select id="getList" resultType="BrandEntity">
+        select
+        brand.*
+        from goods_brand brand
+        where brand.delete_flag = 0
+
+        <if test="condition.brandName != null and condition.brandName != ''">
+            <bind name="brandName" value="'%'+condition.brandName+'%'"/>
+            and brand.brand_name like #{ brandName }
+        </if>
+
+        order by brand.create_time
+
+    </select>
+
+    <!-- 数量 -->
+    <select id="getTotal" resultType="Integer">
+        select
+        count(*)
+        from goods_brand brand
+        where brand.delete_flag = 0
+
+        <if test="condition.brandName != null and condition.brandName != ''">
+            <bind name="brandName" value="'%'+condition.brandName+'%'"/>
+            and brand.brand_name like #{ brandName }
+        </if>
+
+    </select>
+
 </mapper>
 
 
