@@ -21,6 +21,10 @@ public class SKUAttributeEntity extends BaseEntity implements Serializable {
 
     private Integer attributeId;   //属性 id
 
+    private String attributeName;   //属性名
+
     private Integer attributeValueId;   //属性值 id
+
+    private String attributeValue;   //属性值
 
 }
