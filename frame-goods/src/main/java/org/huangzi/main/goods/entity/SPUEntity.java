@@ -1,5 +1,6 @@
 package org.huangzi.main.goods.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,6 +8,7 @@ import lombok.experimental.Accessors;
 import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author: XGLLHZ
@@ -16,7 +18,7 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("good_spu")
+@TableName("goods_spu")
 public class SPUEntity extends BaseEntity implements Serializable {
 
     private Integer brandId;   //品牌 id
@@ -32,5 +34,12 @@ public class SPUEntity extends BaseEntity implements Serializable {
     private String guaranteeTime;   //保质期
 
     private String spuIntroduction;   //简介
+
+    private String categoryIds;   //类别 ids
+
+    private String categories;   //类别
+
+    @TableField(exist = false)
+    private List<Integer> ids;   //类别 ids
 
 }

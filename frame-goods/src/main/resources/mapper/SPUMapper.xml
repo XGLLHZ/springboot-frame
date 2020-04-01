@@ -2,5 +2,55 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.huangzi.main.goods.mapper.SPUMapper">
 
+    <!-- 列表 -->
+    <select id="getList" resultType="SPUEntity">
+        select
+        *
+        from goods_spu spu
+        where spu.delete_flag = 0
+
+        <if test="condition.brandName != null and condition.brandName != ''">
+            <bind name="brandName" value="'%'+condition.brandName+'%'"/>
+            and spu.brand_name like #{ brandName }
+        </if>
+
+        <if test="condition.spuName != null and condition.spuName != ''">
+            <bind name="spuName" value="'%'+condition.spuName+'%'"/>
+            and spu.spu_name like #{ spuName }
+        </if>
+
+        <if test="condition.categories != null and condition.categories != ''">
+            <bind name="categories" value="'%'+condition.categories+'%'"/>
+            and spu.categories like #{ categories }
+        </if>
+
+        order by spu.update_time
+
+    </select>
+
+    <!-- 数量 -->
+    <select id="getTotal" resultType="Integer">
+        select
+            count(*)
+        from goods_spu spu
+        where spu.delete_flag = 0
+
+        <if test="condition.brandName != null and condition.brandName != ''">
+            <bind name="brandName" value="'%'+condition.brandName+'%'"/>
+            and spu.brand_name like #{ brandName }
+        </if>
+
+        <if test="condition.spuName != null and condition.spuName != ''">
+            <bind name="spuName" value="'%'+condition.spuName+'%'"/>
+            and spu.spu_name like #{ spuName }
+        </if>
+
+        <if test="condition.categories != null and condition.categories != ''">
+            <bind name="categories" value="'%'+condition.categories+'%'"/>
+            and spu.categories like #{ categories }
+        </if>
+
+    </select>
+
 </mapper>
 
