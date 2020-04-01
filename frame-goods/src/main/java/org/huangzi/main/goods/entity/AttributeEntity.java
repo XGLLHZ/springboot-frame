@@ -1,11 +1,13 @@
 package org.huangzi.main.goods.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author: XGLLHZ
@@ -22,5 +24,8 @@ public class AttributeEntity extends BaseEntity implements Serializable {
     private String attributeCode;   //属性编码
 
     private String attributeName;   //属性名称
+
+    @TableField(exist = false)
+    private List<AttributeValueEntity> attributeValueList;   //属性值
 
 }

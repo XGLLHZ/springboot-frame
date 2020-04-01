@@ -2,7 +2,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://119.23.234.176:3306/huangzi-frame #?useUnicode=yes&amp;characterEncoding=UTF-8
+    url: jdbc:mysql://119.23.234.176:3306/huangzi-frame?useUnicode=true&characterEncoding=utf8&useSSL=false&&serverTimezone=UTC
     username: root
     password: GHghpp@19961003
 
