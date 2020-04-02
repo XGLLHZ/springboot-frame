@@ -26,4 +26,11 @@ public interface LogService extends IService<LogEntity> {
      */
     APIResponse getList(LogEntity logEntity);
 
+    /**
+     * 详情
+     * @param logEntity
+     * @return
+     */
+    APIResponse getLog(LogEntity logEntity);
+
 }

@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
-@TableName("bus_blog")
+@TableName("blog_blog")
 public class BlogEntity extends BaseEntity implements Serializable {
 
     @Excel(name = "文章标题", width = 25, orderNum = "0")
@@ -48,5 +48,20 @@ public class BlogEntity extends BaseEntity implements Serializable {
 
     @TableField(exist = false)
     private String fileTitle;   //导出文件名
+
+    @TableField(exist = false)
+    private String[] searchTime;   //查询时间
+
+    @TableField(exist = false)
+    private String startTime;   //开始时间
+
+    @TableField(exist = false)
+    private String endTime;   //结束时间
+
+    @TableField(exist = false)
+    private String fileBase64;   //文件 base64 格式
+
+    @TableField(exist = false)
+    private String fileName;   //文件名
 
 }

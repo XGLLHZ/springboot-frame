@@ -1,6 +1,7 @@
 package org.huangzi.main.common.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -19,9 +20,6 @@ import java.sql.Timestamp;
 @Accessors(chain = true)
 @TableName("sys_log")
 public class LogEntity extends BaseEntity implements Serializable {
-
-    @TableId(type = IdType.AUTO)
-    private Integer id;   //主键
 
     private String userName;   //用户名
 
@@ -45,10 +43,13 @@ public class LogEntity extends BaseEntity implements Serializable {
 
     private String exceptionDetail;   //异常详情
 
-    private Integer deleteFlag;   //删除状态：0：未删除；1：已删除
+    @TableField(exist = false)
+    private String[] searchTime;   //查询时间
 
-    private Timestamp createTime;   //创建时间
+    @TableField(exist = false)
+    private String startTime;   //开始时间
 
-    private Timestamp updateTime;   //修改时间
+    @TableField(exist = false)
+    private String endTime;   //结束时间
 
 }

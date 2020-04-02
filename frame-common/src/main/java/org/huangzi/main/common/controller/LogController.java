@@ -27,4 +27,10 @@ public class LogController {
         return logService.getList(logEntity);
     }
 
+    @LogAnnotation("日志详情")
+    @RequestMapping("/get")
+    public APIResponse getLog(@RequestBody LogEntity logEntity) {
+        return logService.getLog(logEntity);
+    }
+
 }

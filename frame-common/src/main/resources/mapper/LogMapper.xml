@@ -13,6 +13,12 @@
             and log.log_type = #{condition.logType}
         </if>
 
+        <if test="condition.startTime != null and condition.startTime != '' and condition.endTime != null and condition.endTime != ''">
+            and log.create_time between #{ condition.startTime } and #{ condition.endTime }
+        </if>
+
+        order by log.create_time desc
+
     </select>
 
     <!-- 获取数据总数 -->
@@ -24,6 +30,10 @@
 
         <if test = " condition.logType != null and condition.logType != '' ">
             and log.log_type = #{condition.logType}
+        </if>
+
+        <if test="condition.startTime != null and condition.startTime != '' and condition.endTime != null and condition.endTime != ''">
+            and log.create_time between #{ condition.startTime } and #{ condition.endTime }
         </if>
 
     </select>

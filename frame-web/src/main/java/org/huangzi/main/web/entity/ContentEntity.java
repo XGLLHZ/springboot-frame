@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
-@TableName("bus_content")
+@TableName("blog_content")
 public class ContentEntity extends BaseEntity implements Serializable {
 
     private Integer contentType;   //类型：0：全部；1：文章

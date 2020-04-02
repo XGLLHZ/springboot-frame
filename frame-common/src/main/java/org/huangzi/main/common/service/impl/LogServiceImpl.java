@@ -101,15 +101,19 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, LogEntity> implements
         //浏览器
         logEntity.setBrowser(StringUtil.getUserBrowser(request));
 
-        Integer res = logMapper.insert(logEntity);
+        int res = logMapper.insert(logEntity);
         return res;
     }
 
     @Override
     public APIResponse getList(LogEntity logEntity) {
+        if (logEntity.getSearchTime().length > 0) {
+            logEntity.setStartTime(logEntity.getSearchTime()[0]);
+            logEntity.setEndTime(logEntity.getSearchTime()[1]);
+        }
         Page<LogEntity> page = new Page<>(logEntity.getCurrentPage(), logEntity.getPageSize());
         List<LogEntity> list = logMapper.list(page, logEntity);
-        Integer total = logMapper.total(logEntity);
+        int total = logMapper.total(logEntity);
         Map<String, Object> map = new HashMap<>();
         if (list == null) {
             map.put("dataList", new ArrayList<>());
@@ -117,6 +121,17 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, LogEntity> implements
         }
         map.put("dataList", list);
         map.put("total", total);
+        return new APIResponse(map);
+    }
+
+    @Override
+    public APIResponse getLog(LogEntity logEntity) {
+        LogEntity logEntity1 = logMapper.selectById(logEntity.getId());
+        if (logEntity1 == null) {
+            return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        }
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(ConstConfig.DATA_INFO, logEntity1);
         return new APIResponse(map);
     }
 

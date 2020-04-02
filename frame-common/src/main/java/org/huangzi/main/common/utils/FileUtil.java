@@ -1,10 +1,13 @@
 package org.huangzi.main.common.utils;
 
+import cn.hutool.core.util.IdUtil;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
 import org.huangzi.main.common.entity.FileEntity;
 import org.springframework.util.Base64Utils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -21,13 +24,16 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     //阿里云 OSS 对象存储
     private static final String END_POINT = "http://oss-cn-beijing.aliyuncs.com";   //北京
 
-    private static final String ACCESS_KEY_ID = "LTAIuyM8p0B3hCZe0";   //accessKeyId
+    private static final String ACCESS_KEY_ID = "LTAI4FiPpGiJWKubedQxuv2ao";   //accessKeyId
 
-    private static final String ACCESS_KEY_SECRET = "GxjhCWuK0LfOsGeCP640AMbu5Hf8HB0";   //accessKeySecret
+    private static final String ACCESS_KEY_SECRET = "FWVuLkr58tpa60cAWDYisRrjPJWoseo";   //accessKeySecret
 
     private static final String BUCKET = "springboot-frame";   //bucket
 
     private static final String FILE_DIR = "admin/";   //文件保存基路径
+
+    //图片路径
+    public static final String IMAGE_URL = "http://springboot-frame.oss-cn-beijing.aliyuncs.com/admin/images/";
 
     //文件类型
     private static final String DOCUMENT = ".doc .docx .pdf .pps .ppt .txt .xls .xlsx";
@@ -37,31 +43,29 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
 
     /**
      * 上传文件
-     * @param fileBase64 文件的 base64格式
-     * @param fileName 文件名（带后缀）
+     * @param multipartFile MultipartFile (web 中用来接收前台传来的文件)
      * @return
      */
-    public static FileEntity uploadFile(String fileBase64, String fileName) {
+    public static FileEntity uploadFile(MultipartFile multipartFile) {
         //创建阿里云客户端对象
         OSSClient ossClient = new OSSClient(END_POINT,ACCESS_KEY_ID,ACCESS_KEY_SECRET);
+        //设置读写权限
+        ossClient.setBucketAcl(BUCKET, CannedAccessControlList.PublicRead);
         FileEntity fileEntity = new FileEntity();
-        byte[] fileByte = Base64Utils.decodeFromString(fileBase64);
-        //获取文件后缀
-        int lastIndexOf = fileName.lastIndexOf(".");
-        String fileType = fileName.substring(lastIndexOf);
+        // 获取文件名
+        String fileName = multipartFile.getOriginalFilename();
+        // 获取文件类型
+        String fileType = "." + getPrefix(fileName);
         try {
             //生成文件名
             String fileNewName = generateFileName(fileType);
-            //将文件从 base64 格式转化成文件，以便获取文件大小等信息
-            FileOutputStream fileOutputStream = new FileOutputStream(
-                    System.getProperty("java.io.tmpdir") + File.separator + fileNewName);
-            fileOutputStream.write(fileByte);
-            fileOutputStream.close();
-            //文件输出未知为系统临时缓存目录
-            File file = new File(System.getProperty("java.io.tmpdir") + File.separator + fileNewName);
+            // 将 MultipartFile 转化成 File
+            File file = toFile(multipartFile);
             if (file.exists()) {
                 ObjectMetadata objectMetadata = new ObjectMetadata();
-                InputStream inputStream = new ByteArrayInputStream(fileByte);
+                InputStream inputStream = new FileInputStream(file);
+                //设置文件类型
+                objectMetadata.setContentType(getContentType(fileNewName.substring(fileNewName.lastIndexOf("."))));
                 objectMetadata.setContentLength(inputStream.available());
                 //上传文件
                 PutObjectResult putObjectResult = ossClient.putObject(BUCKET,
@@ -72,7 +76,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
                     fileEntity.setFileName(fileNewName);
                     fileEntity.setFileType(getFileType(fileType));
                     fileEntity.setFileSize(file.length() + "");
-                    fileEntity.setFilePath(getFileUrl(fileNewName));
+                    fileEntity.setFilePath(IMAGE_URL + fileNewName);
                     return fileEntity;
                 } else {
                     return null;
@@ -81,6 +85,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        ossClient.shutdown();
         return null;
     }
 
@@ -176,7 +181,84 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         return file;
     }
 
-    public static void main(String[] args) {
+    /**
+     * MultipartFile to File
+     * @param multipartFile
+     * @return
+     */
+    public static File toFile(MultipartFile multipartFile){
+        // 获取文件名
+        String fileName = multipartFile.getOriginalFilename();
+        // 获取文件后缀
+        String prefix = "." + getPrefix(fileName);
+        File file = null;
+        try {
+            // 用uuid作为文件名，防止生成的临时文件重复
+            file = File.createTempFile(IdUtil.simpleUUID(), prefix);
+            // MultipartFile to File
+            multipartFile.transferTo(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    /**
+     * 获取文件后缀 不带 .
+     * @param fileName
+     * @return
+     */
+    public static String getPrefix(String fileName) {
+        if ((fileName != null) && (fileName.length() > 0)) {
+            int dot = fileName.lastIndexOf('.');
+            if ((dot >-1) && (dot < (fileName.length() - 1))) {
+                return fileName.substring(dot + 1);
+            }
+        }
+        return fileName;
+    }
+
+    /**
+     * 设置文件类型 解决文件 url 打开为下载而不是直接展示的问题
+     * @param FilenameExtension
+     * @return
+     */
+    public static String getContentType(String FilenameExtension) {
+        if (FilenameExtension.equalsIgnoreCase(".bmp")) {
+            return "image/bmp";
+        }
+        if (FilenameExtension.equalsIgnoreCase(".gif")) {
+            return "image/gif";
+        }
+        if (FilenameExtension.equalsIgnoreCase(".jpeg") ||
+                FilenameExtension.equalsIgnoreCase(".jpg") ||
+                FilenameExtension.equalsIgnoreCase(".png")) {
+            return "image/jpg";
+        }
+        if (FilenameExtension.equalsIgnoreCase(".html")) {
+            return "text/html";
+        }
+        if (FilenameExtension.equalsIgnoreCase(".txt")) {
+            return "text/plain";
+        }
+        if (FilenameExtension.equalsIgnoreCase(".vsd")) {
+            return "application/vnd.visio";
+        }
+        if (FilenameExtension.equalsIgnoreCase(".pptx") ||
+                FilenameExtension.equalsIgnoreCase(".ppt")) {
+            return "application/vnd.ms-powerpoint";
+        }
+        if (FilenameExtension.equalsIgnoreCase(".docx") ||
+                FilenameExtension.equalsIgnoreCase(".doc")) {
+            return "application/msword";
+        }
+        if (FilenameExtension.equalsIgnoreCase(".xml")) {
+            return "text/xml";
+        }
+        return "image/jpg";
+    }
+
+    /*public static void main(String[] args) {
         File file = new File("/Users/xinou/Desktop/photos/pc-one-big.jpeg");
         if (file.exists()) {
             try {
@@ -193,6 +275,6 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
 }

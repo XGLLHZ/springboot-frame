@@ -3,6 +3,7 @@ package org.huangzi.main.web.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.web.entity.BlogEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -55,5 +56,12 @@ public interface BlogService extends IService<BlogEntity> {
      * @return
      */
     APIResponse exportBlog(HttpServletResponse response, BlogEntity blogEntity);
+
+    /**
+     * 图片上传
+     * @param multipartFile
+     * @return
+     */
+    APIResponse uploadImage(MultipartFile multipartFile);
 
 }

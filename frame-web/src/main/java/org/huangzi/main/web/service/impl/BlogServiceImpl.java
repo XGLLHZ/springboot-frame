@@ -3,8 +3,10 @@ package org.huangzi.main.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.huangzi.main.common.entity.FileEntity;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
+import org.huangzi.main.common.utils.FileUtil;
 import org.huangzi.main.web.mapper.ContentMapper;
 import org.huangzi.main.web.entity.BlogEntity;
 import org.huangzi.main.web.service.BlogService;
@@ -14,6 +16,8 @@ import org.huangzi.main.web.utils.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -37,6 +41,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
 
     @Override
     public APIResponse getList(BlogEntity blogEntity) {
+        if (blogEntity.getSearchTime().length > 0) {
+            blogEntity.setStartTime(blogEntity.getSearchTime()[0]);
+            blogEntity.setEndTime(blogEntity.getSearchTime()[1]);
+        }
         Page<BlogEntity> page = new Page<>(blogEntity.getCurrentPage(), blogEntity.getPageSize());
         List<BlogEntity> list = blogMapper.getList(page, blogEntity);
         Integer total = blogMapper.getTotal(blogEntity);
@@ -76,7 +84,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
     }
 
     @Override
+    @Transactional
     public APIResponse insertBlog(BlogEntity blogEntity) {
+        blogEntity.setBlogAuthor("XGLLHZ");
         int res = blogMapper.insert(blogEntity);
         if (res <= 0) {
             return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
@@ -93,6 +103,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
     }
 
     @Override
+    @Transactional
     public APIResponse deleteBlog(BlogEntity blogEntity) {
         BlogEntity blogEntity1 = blogMapper.selectById(blogEntity.getId());
         ContentEntity contentEntity = contentMapper.selectOne(new QueryWrapper<ContentEntity>()
@@ -116,6 +127,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
     }
 
     @Override
+    @Transactional
     public APIResponse updateBlog(BlogEntity blogEntity) {
         BlogEntity blogEntity1 = blogMapper.selectById(blogEntity.getId());
         ContentEntity contentEntity = contentMapper.selectOne(new QueryWrapper<ContentEntity>()
@@ -146,6 +158,20 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
         }
         ExcelUtil.exportExcel(response, list, blogEntity.getFileTitle());
         return new APIResponse();
+    }
+
+    @Override
+    public APIResponse uploadImage(MultipartFile multipartFile) {
+        FileEntity fileEntity = FileUtil.uploadFile(multipartFile);
+        if (fileEntity == null) {
+            return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        if (fileEntity.getFilePath() == null) {
+            return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(ConstConfig.DATA_INFO, fileEntity.getFilePath());
+        return new APIResponse(map);
     }
 
 }

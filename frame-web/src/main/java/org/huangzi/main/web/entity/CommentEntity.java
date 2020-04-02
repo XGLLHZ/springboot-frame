@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@TableName("bus_comment")
+@TableName("blog_comment")
 public class CommentEntity extends BaseEntity implements Serializable {
 
     private Integer blogId;   //博客 id

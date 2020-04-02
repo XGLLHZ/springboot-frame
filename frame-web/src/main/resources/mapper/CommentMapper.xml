@@ -13,7 +13,7 @@
             users.user_logo as userLogo,
             comment.comment,
             comment.create_time
-        from bus_comment comment
+        from blog_comment comment
         left join bus_user users
         on users.delete_flag = 0
         and users.id = comment.user_id

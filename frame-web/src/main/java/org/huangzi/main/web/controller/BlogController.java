@@ -7,7 +7,9 @@ import org.huangzi.main.web.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,6 +59,12 @@ public class BlogController {
     @RequestMapping("/export")
     public APIResponse exportExcel(@RequestBody HttpServletResponse response, BlogEntity blogEntity) {
         return blogService.exportBlog(response, blogEntity);
+    }
+
+    @LogAnnotation("博客-上传图片")
+    @RequestMapping("/uploadimage")
+    public APIResponse uploadImage(@RequestParam MultipartFile file) {
+        return blogService.uploadImage(file);
     }
 
 }
