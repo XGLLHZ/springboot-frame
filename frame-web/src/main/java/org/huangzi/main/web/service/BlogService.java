@@ -64,4 +64,11 @@ public interface BlogService extends IService<BlogEntity> {
      */
     APIResponse uploadImage(MultipartFile multipartFile);
 
+    /**
+     * 全部列表
+     * @param blogEntity
+     * @return
+     */
+    APIResponse getAllBlog(BlogEntity blogEntity);
+
 }

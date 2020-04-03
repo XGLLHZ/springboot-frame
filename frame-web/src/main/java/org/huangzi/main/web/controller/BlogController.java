@@ -67,4 +67,10 @@ public class BlogController {
         return blogService.uploadImage(file);
     }
 
+    @LogAnnotation("全部博客列表")
+    @RequestMapping("/getall")
+    public APIResponse getAllBlog(@RequestBody BlogEntity blogEntity) {
+        return blogService.getAllBlog(blogEntity);
+    }
+
 }

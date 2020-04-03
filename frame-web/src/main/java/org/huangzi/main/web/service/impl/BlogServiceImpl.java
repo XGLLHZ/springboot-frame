@@ -174,4 +174,25 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
         return new APIResponse(map);
     }
 
+    @Override
+    public APIResponse getAllBlog(BlogEntity blogEntity) {
+        List<BlogEntity> list;
+        if (blogEntity.getBlogType() == null || blogEntity.getBlogType() == 0) {
+            list = blogMapper.selectList(new QueryWrapper<BlogEntity>()
+                    .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                    .orderByDesc("update_time"));
+        } else {
+            list = blogMapper.selectList(new QueryWrapper<BlogEntity>()
+                    .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                    .eq("blog_type", blogEntity.getBlogType())
+                    .orderByDesc("update_time"));
+        }
+        if (list == null) {
+            return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(ConstConfig.DATA_LIST, list);
+        return new APIResponse(map);
+    }
+
 }

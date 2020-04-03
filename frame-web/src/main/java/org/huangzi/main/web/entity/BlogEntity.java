@@ -26,7 +26,7 @@ public class BlogEntity extends BaseEntity implements Serializable {
     private String blogAuthor;   //作者
 
     @Excel(name = "文章类型", width = 10, orderNum = "0")
-    private Integer blogType;   //类型: 0: 全部; 1: java;2: python;...
+    private Integer blogType;   //类型: 0: 全部; 1: spring boot; 2: spring cloud ; 3: java; 4: python; 5: story
 
     @Excel(name = "文章标签", width = 20, orderNum = "0")
     private String blogLabel;   //标签
