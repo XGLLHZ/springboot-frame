@@ -6,7 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.huangzi.main.common.utils.*;
 import org.huangzi.main.common.annotation.LogAnnotation;
-import org.huangzi.main.common.entity.OnlineUserEntity;
+import org.huangzi.main.common.dto.OnlineUserDto;
 import org.huangzi.main.common.service.OnlineUserService;
 import org.huangzi.main.common.entity.LogEntity;
 import org.huangzi.main.common.mapper.LogMapper;
@@ -58,10 +58,10 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, LogEntity> implements
         String ip = StringUtil.getUserIp(request);
         List<String> list = redisUtil.getListKey(ConstConfig.ONLINE_KEY + "*");
         Collections.reverse(list);
-        List<OnlineUserEntity> list1 = new ArrayList<>();
-        OnlineUserEntity onlineUserEntity1 = null;
+        List<OnlineUserDto> list1 = new ArrayList<>();
+        OnlineUserDto onlineUserEntity1 = null;
         for (String key : list) {
-            onlineUserEntity1 = (OnlineUserEntity) redisUtil.getValue(key);
+            onlineUserEntity1 = (OnlineUserDto) redisUtil.getValue(key);
             if (onlineUserEntity1 != null) {
                 if (onlineUserEntity1.toString().contains(ip)) {
                     list1.add(onlineUserEntity1);

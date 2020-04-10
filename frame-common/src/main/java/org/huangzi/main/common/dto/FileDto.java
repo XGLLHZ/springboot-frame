@@ -1,4 +1,4 @@
-package org.huangzi.main.common.entity;
+package org.huangzi.main.common.dto;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,7 +11,7 @@ import org.huangzi.main.common.utils.BaseEntity;
  */
 @Data
 @Accessors(chain = true)
-public class FileEntity extends BaseEntity {
+public class FileDto extends BaseEntity {
 
     private Integer id;   //主键
 

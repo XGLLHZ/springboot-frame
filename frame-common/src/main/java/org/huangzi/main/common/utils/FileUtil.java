@@ -5,8 +5,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
-import org.huangzi.main.common.entity.FileEntity;
-import org.springframework.util.Base64Utils;
+import org.huangzi.main.common.dto.FileDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -46,12 +45,12 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
      * @param multipartFile MultipartFile (web 中用来接收前台传来的文件)
      * @return
      */
-    public static FileEntity uploadFile(MultipartFile multipartFile) {
+    public static FileDto uploadFile(MultipartFile multipartFile) {
         //创建阿里云客户端对象
         OSSClient ossClient = new OSSClient(END_POINT,ACCESS_KEY_ID,ACCESS_KEY_SECRET);
         //设置读写权限
         ossClient.setBucketAcl(BUCKET, CannedAccessControlList.PublicRead);
-        FileEntity fileEntity = new FileEntity();
+        FileDto fileEntity = new FileDto();
         // 获取文件名
         String fileName = multipartFile.getOriginalFilename();
         // 获取文件类型

@@ -107,4 +107,8 @@ public class ConstConfig {
     public static final Integer RE_EXIST_CHILDREN_CODE = 117;
     public static final String RE_EXIST_CHILDREN_MESSAGE = "此项存在子级，不能删除！";
 
+    // 微信小程序授权失败
+    public static final Integer RE_MA_LOGIN_FAIL_CODE = 118;
+    public static final String RE_MA_LOGIN_FAIL_MESSAGE = "微信小程序授权失败！";
+
 }

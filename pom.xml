@@ -192,6 +192,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- wx java -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+
         <!-- 微信第三方授权 -->
         <!-- https://mvnrepository.com/artifact/com.github.liyiorg/weixin-popular -->
         <dependency>

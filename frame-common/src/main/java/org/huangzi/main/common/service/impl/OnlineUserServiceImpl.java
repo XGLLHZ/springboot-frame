@@ -1,6 +1,6 @@
 package org.huangzi.main.common.service.impl;
 
-import org.huangzi.main.common.entity.OnlineUserEntity;
+import org.huangzi.main.common.dto.OnlineUserDto;
 import org.huangzi.main.common.service.OnlineUserService;
 import org.huangzi.main.common.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
 
     @Override
     public boolean saveOnlineUserInfo(HttpServletRequest request, Integer userId, String userName, Integer userType) {
-        OnlineUserEntity onlineUserEntity = new OnlineUserEntity();
+        OnlineUserDto onlineUserEntity = new OnlineUserDto();
         if (userId == null && userName == null && userType == null) {
             return false;
         }
@@ -51,10 +51,10 @@ public class OnlineUserServiceImpl implements OnlineUserService {
             return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
         Collections.reverse(list);
-        List<OnlineUserEntity> list1 = new ArrayList<>();
-        OnlineUserEntity onlineUserEntity1 = null;
+        List<OnlineUserDto> list1 = new ArrayList<>();
+        OnlineUserDto onlineUserEntity1 = null;
         for (String key : list) {
-            onlineUserEntity1 = (OnlineUserEntity) redisUtil.getValue(key);
+            onlineUserEntity1 = (OnlineUserDto) redisUtil.getValue(key);
             if (onlineUserEntity1 != null) {
                 if (StringUtil.isNotEmpty(condition)) {
                     if (onlineUserEntity1.toString().contains(condition)) {

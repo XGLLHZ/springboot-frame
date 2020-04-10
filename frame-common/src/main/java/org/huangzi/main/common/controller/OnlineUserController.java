@@ -2,7 +2,7 @@ package org.huangzi.main.common.controller;
 
 import org.huangzi.main.common.annotation.LogAnnotation;
 import org.huangzi.main.common.utils.APIResponse;
-import org.huangzi.main.common.entity.OnlineUserEntity;
+import org.huangzi.main.common.dto.OnlineUserDto;
 import org.huangzi.main.common.service.OnlineUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +27,7 @@ public class OnlineUserController {
      */
     @LogAnnotation("在线用户")
     @RequestMapping("/list")
-    public APIResponse getListOnlineUser(@RequestBody OnlineUserEntity onlineUserEntity) {
+    public APIResponse getListOnlineUser(@RequestBody OnlineUserDto onlineUserEntity) {
         return onlineUserService.getListOnlineUser(onlineUserEntity.getUserName());
     }
 

@@ -3,7 +3,7 @@ package org.huangzi.main.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.huangzi.main.common.entity.FileEntity;
+import org.huangzi.main.common.dto.FileDto;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
 import org.huangzi.main.common.utils.FileUtil;
@@ -41,7 +41,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
 
     @Override
     public APIResponse getList(BlogEntity blogEntity) {
-        if (blogEntity.getSearchTime().length > 0) {
+        if (blogEntity.getSearchTime() != null && blogEntity.getSearchTime().length > 0) {
             blogEntity.setStartTime(blogEntity.getSearchTime()[0]);
             blogEntity.setEndTime(blogEntity.getSearchTime()[1]);
         }
@@ -162,7 +162,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
 
     @Override
     public APIResponse uploadImage(MultipartFile multipartFile) {
-        FileEntity fileEntity = FileUtil.uploadFile(multipartFile);
+        FileDto fileEntity = FileUtil.uploadFile(multipartFile);
         if (fileEntity == null) {
             return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
