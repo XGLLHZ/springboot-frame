@@ -28,9 +28,9 @@
         <module>frame-main</module>   <!-- 启动模块 -->
         <module>frame-authority</module>   <!-- 权限模块 -->
         <module>frame-common</module>   <!-- 公共模块 -->
-        <module>frame-mp</module>   <!-- 小程序模块 -->
         <module>frame-web</module>   <!-- web 模块 -->
-        <module>frame-goods</module>   <!-- 商品模块 -->
+        <module>frame-goods</module>
+        <module>frame-ma</module>   <!-- 商品模块 -->
     </modules>
 
     <dependencies>

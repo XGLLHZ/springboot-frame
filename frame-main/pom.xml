@@ -33,13 +33,6 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- mp 模块 -->
-        <dependency>
-            <groupId>org.huangzi</groupId>
-            <artifactId>mp</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
         <!-- web 模块 -->
         <dependency>
             <groupId>org.huangzi</groupId>
@@ -51,6 +44,13 @@
         <dependency>
             <groupId>org.huangzi</groupId>
             <artifactId>goods</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- 小程序模块 -->
+        <dependency>
+            <groupId>org.huangzi</groupId>
+            <artifactId>ma</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://119.23.234.176:3306/huangzi-frame?useUnicode=true&characterEncoding=utf8&useSSL=false&&serverTimezone=UTC
     username: root
-    password: GHghpp@19961003
+    password: 密码
 
 
 

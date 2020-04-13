@@ -62,10 +62,10 @@ mybatis-plus:   #mybatisplus配置s
 
 ###################### 微信相关 ######################
 wx:
-  mp:
+  ma:
     configs:
-      - appId: *
-        appSecret: *
-        token: *
-        aesKey: *
-        msgFormat: *
+      - appId: asdsad
+        appSecret: asdsad
+        token: asdsad
+        aesKey: asdasd
+        msgFormat: asdasd
