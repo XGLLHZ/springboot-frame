@@ -65,11 +65,12 @@ public class DynamicServiceImpl extends ServiceImpl<DynamicMapper, DynamicEntity
         }
         if (dynamicEntity.getFileList() != null && dynamicEntity.getFileList().size() > 0) {
             List<MediaEntity> list = new ArrayList<>();
-            MediaEntity mediaEntity = new MediaEntity();
-            mediaEntity.setObjectId(dynamicEntity.getId());
-            mediaEntity.setUserId(dynamicEntity.getUserId());
-            mediaEntity.setMediaType(1);   //图片
             for (String fileName : dynamicEntity.getFileList()) {
+                MediaEntity mediaEntity = new MediaEntity();
+                mediaEntity.setObjectId(dynamicEntity.getId());
+                mediaEntity.setUserId(dynamicEntity.getUserId());
+                mediaEntity.setMediaType(1);   //图片
+                mediaEntity.setObjectType(1);
                 mediaEntity.setFileName(fileName);
                 list.add(mediaEntity);
             }
@@ -114,7 +115,7 @@ public class DynamicServiceImpl extends ServiceImpl<DynamicMapper, DynamicEntity
         if (dynamicEntity1 == null) {
             return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
         }
-        int res = dynamicMapper.updateById(dynamicEntity1);
+        int res = dynamicMapper.updateById(dynamicEntity);
         if (res <= 0) {
             throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
@@ -132,11 +133,12 @@ public class DynamicServiceImpl extends ServiceImpl<DynamicMapper, DynamicEntity
         }
         if (dynamicEntity.getFileList() != null && dynamicEntity.getFileList().size() > 0) {
             List<MediaEntity> list1 = new ArrayList<>();
-            MediaEntity mediaEntity = new MediaEntity();
-            mediaEntity.setObjectId(dynamicEntity.getId());
-            mediaEntity.setUserId(dynamicEntity.getUserId());
-            mediaEntity.setMediaType(1);   //图片
             for (String fileName : dynamicEntity.getFileList()) {
+                MediaEntity mediaEntity = new MediaEntity();
+                mediaEntity.setObjectId(dynamicEntity.getId());
+                mediaEntity.setUserId(dynamicEntity.getUserId());
+                mediaEntity.setMediaType(1);   //图片
+                mediaEntity.setObjectType(1);
                 mediaEntity.setFileName(fileName);
                 list1.add(mediaEntity);
             }

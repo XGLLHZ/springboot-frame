@@ -111,4 +111,8 @@ public class ConstConfig {
     public static final Integer RE_MA_LOGIN_FAIL_CODE = 118;
     public static final String RE_MA_LOGIN_FAIL_MESSAGE = "微信小程序授权失败！";
 
+    //删除媒体没有权限
+    public static final Integer RE_CANNOT_DEL_CODE = 119;
+    public static final String RE_CANNOT_DEL_MESSAGE = "这些文件不是你传的哦！";
+
 }
