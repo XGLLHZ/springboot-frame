@@ -77,6 +77,17 @@ public class SYSPermController {
     }
 
     /**
+     * 根据权限类型获取父级
+     * @param sysPermission
+     * @return
+     */
+    @LogAnnotation("根据权限类型获取父级")
+    @RequestMapping("/getByType")
+    public APIResponse getPermByPermType(@RequestBody SYSPermission sysPermission) {
+        return sysPermService.getPermByPermType(sysPermission);
+    }
+
+    /**
      * 构建菜单树
      * @param sysPermission
      * @return
@@ -91,7 +102,14 @@ public class SYSPermController {
      * 测试构建树形菜单-不分级
      * @return
      */
-    @RequestMapping("/getall")
+    @LogAnnotation("权限树")
+    @RequestMapping("/getPermTree")
+    public APIResponse getPermTree() {
+        return sysPermService.getPermTree();
+    }
+
+    @LogAnnotation("全部权限列表")
+    @RequestMapping("/getAll")
     public APIResponse getAllPerm() {
         return sysPermService.getAllPerm();
     }

@@ -2,16 +2,15 @@ package org.huangzi.main.authority.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.huangzi.main.authority.entity.SYSPermission;
-import org.huangzi.main.authority.entity.SYSToken;
-import org.huangzi.main.authority.entity.SYSUser;
+import org.huangzi.main.authority.entity.*;
 import org.huangzi.main.authority.mapper.SYSPermMapper;
 import org.huangzi.main.authority.mapper.SYSTokenMapper;
+import org.huangzi.main.authority.service.SYSPermRoleService;
 import org.huangzi.main.authority.service.SYSTokenService;
 import org.huangzi.main.authority.service.SYSUserService;
+import org.huangzi.main.common.dto.ExceptionDto;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
-import org.huangzi.main.common.utils.RedisUtil;
 import org.huangzi.main.common.service.OnlineUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,10 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: XGLLHZ
@@ -49,32 +46,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     @Qualifier("sysUserService")
-    SYSUserService sysUserService;  //系统用户信息-账号、角色
+    private SYSUserService sysUserService;  //系统用户信息-账号、角色
 
     @Autowired
-    FilterRequestRole filterRequestRole;   //请求信息-url、角色
+    private FilterRequestRole filterRequestRole;   //请求信息-url、角色
 
     @Autowired
-    UrlRoleAccessDecisionManager urlRoleAccessDecisionManager;   //当前登录用户的角色与请求资源需要的角色对比
+    private UrlRoleAccessDecisionManager urlRoleAccessDecisionManager;   //当前登录用户的角色与请求资源需要的角色对比
 
     @Autowired
-    PermissionAccessDeniedHandler permissionAccessDeniedHandler;   //授权失败-权限不足
+    private PermissionAccessDeniedHandler permissionAccessDeniedHandler;   //授权失败-权限不足
 
     @Autowired
-    SYSTokenMapper sysTokenMapper;
+    private SYSTokenMapper sysTokenMapper;
 
     @Autowired
     @Qualifier("sysTokenService")
-    SYSTokenService sysTokenService;
+    private SYSTokenService sysTokenService;
 
     @Autowired
-    SYSPermMapper sysPermMapper;
+    private SYSPermMapper sysPermMapper;
 
     @Autowired
-    OnlineUserService onlineUserService;
+    private OnlineUserService onlineUserService;
 
     @Autowired
-    RedisUtil redisUtil;
+    private SYSPermRoleService sysPermRoleService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -147,25 +144,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             sysTokenMapper.insert(sysToken1);
                         }
 
+                        //根据用户权限构建菜单树
+                        List<Integer> ids = sysUser.getList().stream().map(SYSRole::getId).collect(Collectors.toList());
+                        List<SYSPermRole> list = sysPermRoleService.list(new QueryWrapper<SYSPermRole>()
+                                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                                .in("role_id", ids));
+                        if (list == null) {
+                            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+                        }
+                        List<Integer> ids1 = list.stream().map(SYSPermRole::getPermId).distinct().collect(Collectors.toList());
+                        List<SYSPermission> list1 = sysPermMapper.selectBatchIds(ids1)
+                                .stream()
+                                .sorted(Comparator.comparing(SYSPermission::getPermSort).reversed())
+                                .collect(Collectors.toList());
+                        List<SYSPermission> menuList = new ArrayList<>();
+                        for (SYSPermission sysPermission : getRootNode(list1)) {
+                            menuList.add(buildTree(sysPermission, list1));
+                        }
+
                         //将在线用户信息保存于 redis 中
                         onlineUserService.saveOnlineUserInfo(request, sysUser.getId(), sysUser.getUsername(), sysUser.getUserType());
-
-                        //获取用户当前权限列表
-                        List<SYSPermission> list = sysPermMapper.selectList(new QueryWrapper<SYSPermission>()
-                                .eq("delete_flag", 0));
-                        List<String> list1 = new ArrayList<>();
-                        if (list.size() > 0) {
-                            for (int i = 0; i < list.size(); i++) {
-                                if (list.get(i).getPermUrl() != null) {
-                                    list1.add(list.get(i).getPermUrl());
-                                }
-                            }
-                        }
 
                         Map<String, Object> map = new HashMap<>();
                         map.put("dataInfo", sysUser);
                         map.put("token", token);
-                        map.put("permissionList", list1);
+                        map.put("menuList", menuList);
 
                         ObjectMapper objectMapper = new ObjectMapper();
                         PrintWriter out = response.getWriter();
@@ -183,6 +186,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .accessDeniedHandler(permissionAccessDeniedHandler);
         httpSecurity.csrf().disable();
+    }
+
+    /**
+     * 获取根节点
+     * @param list
+     * @return
+     */
+    private List<SYSPermission> getRootNode(List<SYSPermission> list) {
+        List<SYSPermission> list1 = new ArrayList<>();
+        for (SYSPermission sysPermission : list) {
+            if (sysPermission.getParentId().equals(0)) {
+                list1.add(sysPermission);
+            }
+        }
+        return list1;
+    }
+
+    /**
+     * 构建每一个根节点的树
+     * @param sysPermission
+     * @param list
+     * @return
+     */
+    private SYSPermission buildTree(SYSPermission sysPermission, List<SYSPermission> list) {
+        List<SYSPermission> list1 = new ArrayList<>();
+        for (SYSPermission sysPermission1 : list) {
+            if (sysPermission1.getParentId().equals(sysPermission.getId())) {
+                list1.add(buildTree(sysPermission1, list));
+            }
+        }
+        sysPermission.setChildrenList(list1);
+        return sysPermission;
     }
 
 }

@@ -3,6 +3,7 @@ package org.huangzi.main.authority.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.huangzi.main.common.dto.ExceptionDto;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
 import org.huangzi.main.authority.entity.SYSPermRole;
@@ -15,8 +16,10 @@ import org.huangzi.main.authority.service.SYSRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: XGLLHZ
@@ -33,13 +36,14 @@ public class SYSRoleServiceImpl extends ServiceImpl<SYSRoleMapper, SYSRole> impl
     @Autowired
     SYSPermRoleMapper sysPermRoleMapper;
 
+    @Autowired
     SYSPermRoleService sysPermRoleService;
 
     @Override
     public APIResponse list(SYSRole sysRole) {
         Page<SYSRole> page = new Page<>(sysRole.getCurrentPage(), sysRole.getPageSize());
         List<SYSRole> list = sysRoleMapper.list(page, sysRole);
-        Integer total = sysRoleMapper.total();
+        Integer total = sysRoleMapper.total(sysRole);
         Map<String, Object> data = new HashMap<>();
         data.put("dataList", list);
         data.put("total", total);
@@ -49,101 +53,132 @@ public class SYSRoleServiceImpl extends ServiceImpl<SYSRoleMapper, SYSRole> impl
     @Override
     public APIResponse get(SYSRole sysRole) {
         SYSRole sysRole1 = sysRoleMapper.selectById(sysRole.getId());
-        if (sysRole1 != null) {
-            Map<String, Object> data = new HashMap<>();
-            List<SYSPermission> list = sysRoleMapper.permRoleList(sysRole.getId());
-            data.put("dataInfo", sysRole1);
-            data.put("dataList", list);
-            return new APIResponse(data);
-        } else {
-            return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        if (sysRole1 == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
         }
+        List<SYSPermission> list = sysRoleMapper.permRoleList(sysRole.getId());
+        if (list == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        }
+        List<Integer> ids = list.stream().map(SYSPermission::getId).collect(Collectors.toList());
+        Map<String, Object> map = new HashMap<>(1);
+        sysRole1.setList(list);
+        sysRole1.setPermIds(ids);
+        map.put(ConstConfig.DATA_INFO, sysRole1);
+        return new APIResponse(map);
     }
 
     @Override
+    @Transactional
     public APIResponse insert(SYSRole sysRole) {
-        SYSRole sysRole1 = sysRoleMapper.selectOne(
-                new QueryWrapper<SYSRole>().eq("role_namey", sysRole.getRoleNamey()));
+        SYSRole sysRole1 = sysRoleMapper.selectOne(new QueryWrapper<SYSRole>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("role_namey", sysRole.getRoleNamey()));
         if (sysRole1 != null) {
-            return new APIResponse(ConstConfig.RE_ALREADY_EXIST_ERROR_CODE, ConstConfig.RE_ALREADY_EXIST_ERROR_MESSAGE);
-        } else {
-            sysRoleMapper.insert(sysRole);
-            List<SYSPermRole> list = new ArrayList<>();
-            if (sysRole.getPermIds() != null && sysRole.getPermIds().length > 0) {
-                for (int permId : sysRole.getPermIds()) {
-                    SYSPermRole sysPermRole = new SYSPermRole();
-                    sysPermRole.setPermId(permId);
-                    sysPermRole.setRoleId(sysRole.getId());
-                    list.add(sysPermRole);
-                }
-                boolean res = sysPermRoleService.saveBatch(list, 30);
-                if (res) {
-                    return new APIResponse();
-                } else {
-                    return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
-                }
-            }
-            return new APIResponse();
+            throw new ExceptionDto(ConstConfig.RE_ALREADY_EXIST_ERROR_CODE, ConstConfig.RE_ALREADY_EXIST_ERROR_MESSAGE);
         }
+        int res = sysRoleMapper.insert(sysRole);
+        if (res <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        if (sysRole.getPermIds() == null || sysRole.getPermIds().size() <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSPermRole> list = new ArrayList<>();
+        SYSPermRole sysPermRole;
+        for (int id : sysRole.getPermIds()) {
+            sysPermRole = new SYSPermRole();
+            sysPermRole.setRoleId(sysRole.getId());
+            sysPermRole.setPermId(id);
+            list.add(sysPermRole);
+        }
+        boolean result = sysPermRoleService.saveBatch(list);
+        if (!result) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        return new APIResponse();
     }
 
     @Override
+    @Transactional
     public APIResponse delete(SYSRole sysRole) {
         SYSRole sysRole1 = sysRoleMapper.selectById(sysRole.getId());
-        if (sysRole1 != null) {
-            sysRole1.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
-            sysRoleMapper.updateById(sysRole1);
-            List<SYSPermRole> list = sysPermRoleMapper.selectList(
-                    new QueryWrapper<SYSPermRole>().eq("role_id", sysRole.getId()));
-            if (list != null && list.size() > 0) {
-                for (SYSPermRole sysPermRole : list) {
-                    sysPermRole.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
-                }
-                boolean res = sysPermRoleService.updateBatchById(list);
-                if (res) {
-                    return new APIResponse();
-                } else {
-                    return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
-                }
-            }
-            return new APIResponse();
-        } else {
-            return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        if (sysRole1 == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
         }
+        sysRole1.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
+        int res = sysRoleMapper.updateById(sysRole1);
+        if (res <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSPermRole> list = sysPermRoleMapper.selectList(new QueryWrapper<SYSPermRole>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("role_id", sysRole.getId()));
+        if (list == null || list.size() <= 0){
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSPermRole> list1 = list.stream()
+                .peek(s -> s.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE)).collect(Collectors.toList());
+        boolean result = sysPermRoleService.updateBatchById(list1);
+        if (!result) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        return new APIResponse();
     }
 
     @Override
+    @Transactional
     public APIResponse update(SYSRole sysRole) {
         SYSRole sysRole1 = sysRoleMapper.selectById(sysRole.getId());
-        if (sysRole1 != null) {
-            sysRoleMapper.updateById(sysRole);
-            if (sysRole.getPermIds() != null && sysRole.getPermIds().length > 0) {
-                List<SYSPermRole> list = sysPermRoleMapper.selectList(
-                        new QueryWrapper<SYSPermRole>().eq("role_id", sysRole.getId()));
-                for (SYSPermRole sysPermRole : list) {
-                    sysPermRole.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
-                }
-                boolean res = sysPermRoleService.updateBatchById(list, 30);
-                if (res) {
-                    list.clear();
-                    for (int permId : sysRole.getPermIds()) {
-                        SYSPermRole sysPermRole = new SYSPermRole();
-                        sysPermRole.setRoleId(sysRole.getId());
-                        sysPermRole.setPermId(permId);
-                        list.add(sysPermRole);
-                    }
-                    boolean result = sysPermRoleService.saveBatch(list);
-                    if (result) {
-                        return new APIResponse();
-                    } else {
-                        return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
-                    }
-                }
-            }
-            return new APIResponse();
-        } else {
-            return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        if (sysRole1 == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
         }
+        int res = sysRoleMapper.updateById(sysRole);
+        if (res <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+
+        List<SYSPermRole> list = sysPermRoleMapper.selectList(new QueryWrapper<SYSPermRole>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("role_id", sysRole.getId()));
+        if (list == null || list.size() <= 0){
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSPermRole> list1 = list.stream()
+                .peek(s -> s.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE)).collect(Collectors.toList());
+        boolean result = sysPermRoleService.updateBatchById(list1);
+        if (!result) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        if (sysRole.getPermIds() == null || sysRole.getPermIds().size() <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSPermRole> list2 = new ArrayList<>();
+        SYSPermRole sysPermRole;
+        for (int id : sysRole.getPermIds()) {
+            sysPermRole = new SYSPermRole();
+            sysPermRole.setRoleId(sysRole.getId());
+            sysPermRole.setPermId(id);
+            list2.add(sysPermRole);
+        }
+        result = sysPermRoleService.saveBatch(list2);
+        if (!result) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        return new APIResponse();
+    }
+
+    @Override
+    public APIResponse getAllRole() {
+        List<SYSRole> list = sysRoleMapper.selectList(new QueryWrapper<SYSRole>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE));
+        Map<String, Object> map = new HashMap<>(1);
+        if (list == null) {
+            map.put(ConstConfig.DATA_LIST, new ArrayList<>());
+            return new APIResponse(map);
+        }
+        map.put(ConstConfig.DATA_LIST, list);
+        return new APIResponse(map);
     }
 
 }

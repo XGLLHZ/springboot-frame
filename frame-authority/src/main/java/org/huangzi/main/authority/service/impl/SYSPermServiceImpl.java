@@ -3,6 +3,7 @@ package org.huangzi.main.authority.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.huangzi.main.common.dto.ExceptionDto;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
 import org.huangzi.main.authority.entity.SYSPermission;
@@ -33,7 +34,7 @@ public class SYSPermServiceImpl extends ServiceImpl<SYSPermMapper, SYSPermission
     public APIResponse list(SYSPermission sysPermission) {
         Page<SYSPermission> page = new Page<>(sysPermission.getCurrentPage(), sysPermission.getPageSize());
         List<SYSPermission> list = sysPermMapper.list(page, sysPermission);
-        Integer total = sysPermMapper.total();
+        Integer total = sysPermMapper.total(sysPermission);
         Map<String, Object> data = new HashMap<>();
         data.put("dataList", list);
         data.put("total", total);
@@ -43,6 +44,18 @@ public class SYSPermServiceImpl extends ServiceImpl<SYSPermMapper, SYSPermission
     @Override
     public APIResponse get(SYSPermission sysPermission) {
         SYSPermission sysPermission1 = sysPermMapper.selectById(sysPermission.getId());
+        if (sysPermission1 == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        }
+        if (sysPermission1.getParentId() != null && sysPermission1.getParentId() != 0) {
+            SYSPermission sysPermission2 = sysPermMapper.selectById(sysPermission1.getParentId());
+            if (sysPermission2 == null) {
+                throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+            }
+            if (sysPermission2.getPermName() != null) {
+                sysPermission1.setParentName(sysPermission2.getPermName());
+            }
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("dataInfo", sysPermission1);
         return new APIResponse(data);
@@ -50,25 +63,31 @@ public class SYSPermServiceImpl extends ServiceImpl<SYSPermMapper, SYSPermission
 
     @Override
     public APIResponse insert(SYSPermission sysPermission) {
-        SYSPermission sysPermission1 = sysPermMapper.getByUrl(sysPermission.getPermUrl());
-        if (sysPermission1 != null) {
-            return new APIResponse(ConstConfig.RE_ALREADY_EXIST_ERROR_CODE, ConstConfig.RE_ALREADY_EXIST_ERROR_MESSAGE);
-        } else {
-            sysPermMapper.insert(sysPermission);
-            return new APIResponse();
+        int res = sysPermMapper.insert(sysPermission);
+        if (res <= 0) {
+            return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
+        return new APIResponse();
     }
 
     @Override
     public APIResponse delete(SYSPermission sysPermission) {
         SYSPermission sysPermission1 = sysPermMapper.selectById(sysPermission.getId());
-        if (sysPermission1 != null) {
-            sysPermission1.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
-            sysPermMapper.updateById(sysPermission1);
-            return new APIResponse();
-        } else {
-            return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        if (sysPermission1 == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
         }
+        List<SYSPermission> list = sysPermMapper.selectList(new QueryWrapper<SYSPermission>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("parent_id", sysPermission.getId()));
+        if (list != null && list.size() > 0) {
+            throw new ExceptionDto(ConstConfig.RE_EXIST_CHILDREN_CODE, ConstConfig.RE_EXIST_CHILDREN_MESSAGE);
+        }
+        sysPermission1.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
+        int res = sysPermMapper.updateById(sysPermission1);
+        if (res <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        return new APIResponse();
     }
 
     @Override
@@ -83,13 +102,27 @@ public class SYSPermServiceImpl extends ServiceImpl<SYSPermMapper, SYSPermission
     }
 
     @Override
+    public APIResponse getPermByPermType(SYSPermission sysPermission) {
+        List<SYSPermission> list = sysPermMapper.selectList(new QueryWrapper<SYSPermission>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("perm_type", sysPermission.getPermType()));
+        Map<String, Object> map = new HashMap<>(1);
+        if (list == null) {
+            map.put(ConstConfig.DATA_LIST, new ArrayList<>());
+            return new APIResponse(map);
+        }
+        map.put(ConstConfig.DATA_LIST, list);
+        return new APIResponse(map);
+    }
+
+    @Override
     public APIResponse buildMenu(SYSPermission sysPermission) {
         List<SYSPermission> list = sysPermMapper.selectList(new QueryWrapper<SYSPermission>()
                 .eq("delete_flag", 0).eq("perm_type", 1)
-                .orderByAsc("perm_sort"));   //目录
+                .orderByAsc("perm_sort"));   //菜单
         List<SYSPermission> list1 = sysPermMapper.selectList(new QueryWrapper<SYSPermission>()
                 .eq("delete_flag", 0).eq("perm_type", 2)
-                .orderByAsc("perm_sort"));   //菜单
+                .orderByAsc("perm_sort"));   //二级菜单
         if (list == null || list1 == null) {
             return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
@@ -108,12 +141,14 @@ public class SYSPermServiceImpl extends ServiceImpl<SYSPermMapper, SYSPermission
     }
 
     @Override
-    public APIResponse getAllPerm() {
+    public APIResponse getPermTree() {
         List<SYSPermission> list = sysPermMapper.selectList(new QueryWrapper<SYSPermission>()
-                .eq("delete_flag", 0));
+                .eq("delete_flag", 0)
+                .orderByDesc("perm_sort"));
         Map<String, Object> map = new HashMap<>(1);
         if (list == null) {
             map.put("dataList", new ArrayList<>());
+            return new APIResponse(map);
         }
         List<SYSPermission> list1 = new ArrayList<>();
         for (SYSPermission sysPermission : getRootNode(list)) {
@@ -121,6 +156,19 @@ public class SYSPermServiceImpl extends ServiceImpl<SYSPermMapper, SYSPermission
             list1.add(sysPermission);
         }
         map.put("dataList", list1);
+        return new APIResponse(map);
+    }
+
+    @Override
+    public APIResponse getAllPerm() {
+        List<SYSPermission> list = sysPermMapper.selectList(new QueryWrapper<SYSPermission>()
+                .eq("delete_flag", 0));
+        Map<String, Object> map = new HashMap<>(1);
+        if (list == null) {
+            map.put("dataList", new ArrayList<>());
+            return new APIResponse(map);
+        }
+        map.put(ConstConfig.DATA_LIST, list);
         return new APIResponse(map);
     }
 

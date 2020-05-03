@@ -9,6 +9,8 @@
         sysPerm.parent_id,
         sysPerm.perm_name,
         sysPerm.perm_url,
+        sysPerm.perm_type,
+        sysPerm.perm_sort,
         sysPerm.delete_flag,
         sysPerm.create_time,
         sysPerm.update_time
@@ -19,6 +21,12 @@
             and ( sysPerm.perm_name like '%${ condition.permName }%' or sysPerm.perm_url like '%${ condition.permName }%' )
         </if>
 
+        <if test="condition.permType != null and condition.permType != ''">
+            and sysPerm.perm_type = #{ condition.permType }
+        </if>
+
+        order by sysPerm.create_time desc
+
     </select>
 
     <!--获取数据总数-->
@@ -27,6 +35,15 @@
           count(*)
         from sys_permission sysPerm
         where sysPerm.delete_flag = 0
+
+        <if test=" condition.permName != null and condition.permName != '' ">
+            and ( sysPerm.perm_name like '%${ condition.permName }%' or sysPerm.perm_url like '%${ condition.permName }%' )
+        </if>
+
+        <if test="condition.permType != null and condition.permType != ''">
+            and sysPerm.perm_type = #{ condition.permType }
+        </if>
+
     </select>
 
     <!--获取所有权限及其对应的角色-->

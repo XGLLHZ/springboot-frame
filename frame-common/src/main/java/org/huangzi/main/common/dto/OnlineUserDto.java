@@ -1,7 +1,8 @@
 package org.huangzi.main.common.dto;
 
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 import org.huangzi.main.common.utils.BaseEntity;
 
 /**
@@ -10,10 +11,12 @@ import org.huangzi.main.common.utils.BaseEntity;
  * @description: 在线用户实体类
  */
 @Data
-@Accessors(chain = true)
+@ToString
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class OnlineUserDto extends BaseEntity {
-
-    private Integer id;   //用户 id
 
     private String userName;   //用户名
 

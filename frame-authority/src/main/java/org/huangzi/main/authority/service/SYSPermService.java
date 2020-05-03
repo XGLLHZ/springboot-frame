@@ -47,12 +47,29 @@ public interface SYSPermService extends IService<SYSPermission> {
     APIResponse update(SYSPermission sysPermission);
 
     /**
+     * 根据类型获取父级
+     * @param sysPermission
+     * @return
+     */
+    APIResponse getPermByPermType(SYSPermission sysPermission);
+
+    /**
      * 构建菜单树
      * @param sysPermission
      * @return
      */
     APIResponse buildMenu(SYSPermission sysPermission);
 
+    /**
+     * 权限树
+     * @return
+     */
+    APIResponse getPermTree();
+
+    /**
+     * 全部列表
+     * @return
+     */
     APIResponse getAllPerm();
 
 }

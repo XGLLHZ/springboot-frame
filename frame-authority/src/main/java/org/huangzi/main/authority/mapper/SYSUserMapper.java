@@ -18,16 +18,16 @@ public interface SYSUserMapper extends BaseMapper<SYSUser> {
     /**
      * 获取数据列表
      * @param page
-     * @param condition
+     * @param sysUser
      * @return
      */
-    List<SYSUser> list(Page<SYSUser> page, @Param("condition") SYSUser condition);
+    List<SYSUser> list(Page<SYSUser> page, @Param("condition") SYSUser sysUser);
 
     /**
      * 获取数据总数
      * @return
      */
-    Integer total();
+    Integer total(@Param("condition") SYSUser sysUser);
 
     /**
      * 根据用户id获取用户角色列表

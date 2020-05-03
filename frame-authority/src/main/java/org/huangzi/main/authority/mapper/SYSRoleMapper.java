@@ -18,16 +18,16 @@ public interface SYSRoleMapper extends BaseMapper<SYSRole> {
     /**
      * 获取数据列表
      * @param page
-     * @param condition
+     * @param sysRole
      * @return
      */
-    List<SYSRole> list(Page<SYSRole> page, @Param("condition") SYSRole condition);
+    List<SYSRole> list(Page<SYSRole> page, @Param("condition") SYSRole sysRole);
 
     /**
      * 获取数据总数
      * @return
      */
-    Integer total();
+    Integer total(@Param("condition") SYSRole sysRole);
 
     /**
      * 根据角色id获取其对应的权限列表

@@ -26,7 +26,7 @@ public interface SYSPermMapper extends BaseMapper<SYSPermission> {
      * 获取数据总数
      * @return
      */
-    Integer total();
+    Integer total(@Param("condition") SYSPermission sysPermission);
 
     /**
      * 获取所有权限及其对应的角色

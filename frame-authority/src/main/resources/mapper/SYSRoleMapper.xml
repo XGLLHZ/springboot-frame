@@ -19,6 +19,8 @@
             and ( sysRole.role_namey like '%${ condition.roleNamey }%' or sysRole.role_namez like '%${ condition.roleNamey }%' )
         </if>
 
+        order by sysRole.update_time desc
+
     </select>
 
     <!--获取数据总数-->
@@ -27,6 +29,35 @@
           count(*)
         from sys_role sysRole
         where sysRole.delete_flag = 0
+
+        <if test=" condition.roleNamey != null and condition.roleNamey != '' ">
+            and ( sysRole.role_namey like '%${ condition.roleNamey }%' or sysRole.role_namez like '%${ condition.roleNamey }%' )
+        </if>
+
+    </select>
+
+    <!-- 根据角色 id 获取角色对应权限 -->
+    <select id="permRoleList" resultType="SYSPermission">
+        select
+            perm.id,
+            perm.parent_id,
+            perm.perm_name,
+            perm.perm_url,
+            perm.router_component,
+            perm.router_path,
+            perm.router_icon,
+            perm.router_hidden,
+            perm.perm_type,
+            perm.perm_sort
+        from sys_role role
+        left join sys_perm_role permRole
+        on permRole.delete_flag = 0
+        and permRole.role_id = role.id
+        left join sys_permission perm
+        on permRole.delete_flag = 0
+        and permRole.perm_id = perm.id
+        where perm.delete_flag = 0
+        and role.id = #{ condition }
     </select>
 
 </mapper>

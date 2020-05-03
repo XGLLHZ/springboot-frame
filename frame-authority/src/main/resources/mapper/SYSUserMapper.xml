@@ -8,6 +8,7 @@
           sysUser.id,
           sysUser.username,
           sysUser.password,
+          sysUser.user_type,
           sysUser.delete_flag,
           sysUser.create_time,
           sysUser.update_time
@@ -18,6 +19,12 @@
             and sysUser.username like '%${ condition.username }%'
         </if>
 
+        <if test=" condition.userType != null and condition.userType != '' ">
+            and sysUser.user_type = #{ condition.userType }
+        </if>
+
+        order by sysUser.update_time desc
+
     </select>
 
     <!--获取数据总数-->
@@ -26,6 +33,15 @@
           count(*)
         from sys_user sysUser
         where sysUser.delete_flag = 0
+
+        <if test=" condition.username != null and condition.username != '' ">
+            and sysUser.username like '%${ condition.username }%'
+        </if>
+
+        <if test=" condition.userType != null and condition.userType != '' ">
+            and sysUser.user_type = #{ condition.userType }
+        </if>
+
     </select>
 
     <!--根据用户id获取用户角色列表-->

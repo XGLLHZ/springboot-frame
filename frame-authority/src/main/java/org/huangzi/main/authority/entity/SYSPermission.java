@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
@@ -18,12 +19,13 @@ import java.util.List;
  * @description: 系统-权限表
  */
 @Data
-@Accessors(chain = true)
+@ToString
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @TableName("sys_permission")
 public class SYSPermission extends BaseEntity implements Serializable {
-
-    @TableId(type = IdType.AUTO)
-    private Integer id;   //权限主键
 
     private Integer parentId;   //父菜单id
 
@@ -43,16 +45,16 @@ public class SYSPermission extends BaseEntity implements Serializable {
 
     private Integer permSort;   //权限排序
 
-    private Integer deleteFlag;   //删除状态：0：未删除；1：已删除
-
-    private Timestamp createTime;   //创建时间
-
-    private Timestamp updateTime;   //修改时间
-
     @TableField(exist = false)
     private List<SYSRole> roles;   //角色英文名
 
     @TableField(exist = false)
     private List<SYSPermission> childrenList;   //子菜单
+
+    @TableField(exist = false)
+    private String parentName;   //父菜单名称
+
+    @TableField(exist = false)
+    private Integer userId;   //用户 id
 
 }

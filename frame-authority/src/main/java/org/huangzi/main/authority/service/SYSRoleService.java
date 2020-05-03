@@ -46,4 +46,10 @@ public interface SYSRoleService extends IService<SYSRole> {
      */
     APIResponse update(SYSRole sysRole);
 
+    /**
+     * 全部
+     * @return
+     */
+    APIResponse getAllRole();
+
 }

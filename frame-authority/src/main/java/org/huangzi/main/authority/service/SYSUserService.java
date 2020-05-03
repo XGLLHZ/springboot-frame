@@ -54,4 +54,11 @@ public interface SYSUserService extends UserDetailsService, IService<SYSUser> {
      */
     APIResponse update(SYSUser sysUser);
 
+    /**
+     * 修改密码
+     * @param sysUser
+     * @return
+     */
+    APIResponse updatePassWord(SYSUser sysUser);
+
 }

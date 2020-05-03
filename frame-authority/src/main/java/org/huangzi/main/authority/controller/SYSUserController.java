@@ -52,6 +52,7 @@ public class SYSUserController {
     @LogAnnotation("新增用户-注册")
     @RequestMapping("/register")
     public APIResponse insert(@RequestBody SYSUser sysUser) {
+        sysUser.setPassword("123456");
         return sysUserService.insert(sysUser);
     }
 
@@ -95,6 +96,17 @@ public class SYSUserController {
     @RequestMapping("/update")
     public APIResponse update(@RequestBody SYSUser sysUser) {
         return sysUserService.update(sysUser);
+    }
+
+    /**
+     * 修改密码
+     * @param sysUser
+     * @return
+     */
+    @LogAnnotation("修改密码")
+    @RequestMapping("/updatePassWord")
+    public APIResponse updatePassWord(@RequestBody SYSUser sysUser) {
+        return sysUserService.updatePassWord(sysUser);
     }
 
 }

@@ -77,6 +77,10 @@ public class ConstConfig {
     public static final Integer RE_PLEASE_LOGIN_FIRST_CODE = 105;
     public static final String RE_PLEASE_LOGIN_FIRST_MESSAGE = "请先登录！";
 
+    //修改密码-旧密码错误
+    public static final Integer RE_OLD_PASSWORD_ERROR_CODE = 106;
+    public static final String RE_OLD_PASSWORD_ERROR_MESSAGE = "旧密码错误！";
+
     /*****************************基础业务*******************************/
 
     //数据已存在

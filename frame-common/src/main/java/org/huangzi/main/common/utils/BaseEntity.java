@@ -1,11 +1,10 @@
 package org.huangzi.main.common.utils;
 
-import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -16,7 +15,11 @@ import java.sql.Timestamp;
  * @description: 实体基础类
  */
 @Data
-@Accessors(chain = true)
+@ToString
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class BaseEntity implements Serializable {
 
     @TableId(type = IdType.AUTO)
@@ -24,10 +27,8 @@ public class BaseEntity implements Serializable {
 
     private Integer deleteFlag;   //删除状态：0：未删除；1：已删除
 
-    @Excel(name = "发布时间", width = 20, orderNum = "1")
     private Timestamp createTime;   //创建时间
 
-    @Excel(name = "审核时间", width = 20, orderNum = "0")
     private Timestamp updateTime;   //修改时间
 
     @TableField(exist = false)

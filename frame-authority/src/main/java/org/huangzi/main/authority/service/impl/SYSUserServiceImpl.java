@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.huangzi.main.authority.entity.SYSUserRole;
+import org.huangzi.main.common.dto.ExceptionDto;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
 import org.huangzi.main.authority.entity.SYSRole;
@@ -21,11 +22,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author: XGLLHZ
@@ -49,13 +52,14 @@ public class SYSUserServiceImpl extends ServiceImpl<SYSUserMapper, SYSUser> impl
     @Autowired
     SYSTokenService sysTokenService;
 
+    @Autowired
     SYSUserRoleService sysUserRoleService;
 
     @Override
     public APIResponse list(SYSUser sysUser) {
         Page<SYSUser> page = new Page<>(sysUser.getCurrentPage(), sysUser.getPageSize());
         List<SYSUser> list = sysUserMapper.list(page, sysUser);
-        Integer total = sysUserMapper.total();
+        Integer total = sysUserMapper.total(sysUser);
         Map<String, Object> data = new HashMap<>();
         data.put("dataList", list);
         data.put("total", total);
@@ -65,18 +69,24 @@ public class SYSUserServiceImpl extends ServiceImpl<SYSUserMapper, SYSUser> impl
     @Override
     public APIResponse get(SYSUser sysUser) {
         SYSUser sysUser1 = sysUserMapper.selectById(sysUser.getId());
-        if (sysUser1 != null) {
-            Map<String, Object> data = new HashMap<>();
-            List<SYSRole> list = sysUserMapper.userRoleList(sysUser.getId());
-            data.put("dataInfo", sysUser1);
-            data.put("dataList", list);
-            return new APIResponse(data);
-        } else {
+        if (sysUser1 == null) {
             return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
         }
+        List<SYSRole> list = sysUserMapper.userRoleList(sysUser.getId());
+        if (list == null) {
+            return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<Integer> ids = list.stream()
+                .map(SYSRole::getId).collect(Collectors.toList());
+        Map<String, Object> map = new HashMap<>(1);
+        sysUser1.setRoleIds(ids);
+        sysUser1.setList(list);
+        map.put(ConstConfig.DATA_INFO, sysUser1);
+        return new APIResponse(map);
     }
 
     @Override
+    @Transactional
     public APIResponse insert(SYSUser sysUser) {
         SYSUser sysUser1 = sysUserMapper.selectOne(
                 new QueryWrapper<SYSUser>().eq("username", sysUser.getUsername()));
@@ -87,20 +97,24 @@ public class SYSUserServiceImpl extends ServiceImpl<SYSUserMapper, SYSUser> impl
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             String password = bCryptPasswordEncoder.encode(sysUser.getPassword());
             sysUser.setPassword(password);
-            sysUserMapper.insert(sysUser);
+            int res = sysUserMapper.insert(sysUser);
+            if (res <= 0) {
+                throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+            }
             List<SYSUserRole> list = new ArrayList<>();
-            if (sysUser.getRoleIds() != null && sysUser.getRoleIds().length > 0) {
+            if (sysUser.getRoleIds() != null && sysUser.getRoleIds().size() > 0) {
+                SYSUserRole sysUserRole;
                 for (int roleId : sysUser.getRoleIds()) {
-                    SYSUserRole sysUserRole = new SYSUserRole();
+                    sysUserRole = new SYSUserRole();
                     sysUserRole.setUserId(sysUser.getId());
                     sysUserRole.setRoleId(roleId);
                     list.add(sysUserRole);
                 }
-                boolean res = sysUserRoleService.saveBatch(list);
-                if (res) {
-                    return new APIResponse();
+                boolean result = sysUserRoleService.saveBatch(list);
+                if (!result) {
+                    throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
                 } else {
-                    return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+                    return new APIResponse();
                 }
             }
             return new APIResponse();
@@ -149,39 +163,90 @@ public class SYSUserServiceImpl extends ServiceImpl<SYSUserMapper, SYSUser> impl
     }
 
     @Override
+    @Transactional
     public APIResponse delete(SYSUser sysUser) {
         SYSUser sysUser1 = sysUserMapper.selectById(sysUser.getId());
-        if (sysUser1 != null) {
-            sysUser1.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
-            sysUserMapper.updateById(sysUser1);
-            List<SYSUserRole> list = sysUserRoleMapper.selectList(
-                    new QueryWrapper<SYSUserRole>().eq("user_id", sysUser.getId()));
-            if (list != null && list.size() > 0) {
-                for (SYSUserRole sysUserRole : list) {
-                    sysUserRole.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
-                }
-                boolean res = sysUserRoleService.updateBatchById(list);
-                if (res) {
-                    return new APIResponse();
-                } else {
-                    return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
-                }
-            }
-            return new APIResponse();
-        } else {
+        if (sysUser1 == null) {
             return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
         }
+        sysUser1.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE);
+        int res = sysUserMapper.updateById(sysUser1);
+        if (res <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSUserRole> list = sysUserRoleMapper.selectList(new QueryWrapper<SYSUserRole>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("user_id", sysUser.getId()));
+        if (list == null) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSUserRole> list1 = list.stream()
+                .peek(s -> s.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE)).collect(Collectors.toList());
+        boolean result = sysUserRoleService.updateBatchById(list1);
+        if (!result) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        return new APIResponse();
     }
 
     @Override
+    @Transactional
     public APIResponse update(SYSUser sysUser) {
         SYSUser sysUser1 = sysUserMapper.selectById(sysUser.getId());
-        if (sysUser1 != null) {
-            sysUserMapper.updateById(sysUser);
-            return new APIResponse();
-        } else {
+        if (sysUser1 == null) {
             return new APIResponse(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
         }
+        int res = sysUserMapper.updateById(sysUser);
+        if (res <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSUserRole> list = sysUserRoleMapper.selectList(new QueryWrapper<SYSUserRole>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("user_id", sysUser.getId()));
+        if (list == null) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSUserRole> list1 = list.stream()
+                .peek(s -> s.setDeleteFlag(ConstConfig.DELETE_FLAG_ONE)).collect(Collectors.toList());
+        boolean result = sysUserRoleService.updateBatchById(list1);
+        if (!result) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        if (sysUser.getRoleIds() == null || sysUser.getRoleIds().size() <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<SYSUserRole> list2 = new ArrayList<>();
+        SYSUserRole sysUserRole;
+        for (int id : sysUser.getRoleIds()) {
+            sysUserRole = new SYSUserRole();
+            sysUserRole.setUserId(sysUser.getId());
+            sysUserRole.setRoleId(id);
+            list2.add(sysUserRole);
+        }
+        result = sysUserRoleService.saveBatch(list2);
+        if (!result) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        return new APIResponse();
+    }
+
+    @Override
+    public APIResponse updatePassWord(SYSUser sysUser) {
+        SYSUser sysUser1 = sysUserMapper.selectById(sysUser.getId());
+        if (sysUser1 == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        }
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        boolean result = bCryptPasswordEncoder.matches(sysUser.getOldPassword(), sysUser1.getPassword());
+        if (!result) {
+            throw new ExceptionDto(ConstConfig.RE_OLD_PASSWORD_ERROR_CODE, ConstConfig.RE_OLD_PASSWORD_ERROR_MESSAGE);
+        }
+        sysUser1.setPassword(bCryptPasswordEncoder.encode(sysUser.getPassword()));
+        int res = sysUserMapper.updateById(sysUser1);
+        if (res <= 0) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        return new APIResponse();
     }
 
     @Override

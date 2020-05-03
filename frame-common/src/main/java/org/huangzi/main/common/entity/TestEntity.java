@@ -1,7 +1,6 @@
 package org.huangzi.main.common.entity;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -11,7 +10,11 @@ import java.io.Serializable;
  * @description: 测试实体类
  */
 @Data
-@Accessors(chain = true)
+@Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class TestEntity implements Serializable {
 
     private Integer id;

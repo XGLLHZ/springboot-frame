@@ -72,8 +72,14 @@ public class SYSRoleController {
      */
     @LogAnnotation("修改角色")
     @RequestMapping("/update")
-    public APIResponse update(SYSRole sysRole) {
+    public APIResponse update(@RequestBody SYSRole sysRole) {
         return sysRoleService.update(sysRole);
+    }
+
+    @LogAnnotation("全部角色列表")
+    @RequestMapping("/getAll")
+    public APIResponse getAllRole() {
+        return sysRoleService.getAllRole();
     }
 
 }

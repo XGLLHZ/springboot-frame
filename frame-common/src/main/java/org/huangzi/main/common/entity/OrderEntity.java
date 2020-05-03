@@ -1,7 +1,8 @@
 package org.huangzi.main.common.entity;
 
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
@@ -13,12 +14,13 @@ import java.sql.Timestamp;
  * @description: 订单实体类 这里尽供测试用
  */
 @Data
-@Accessors(chain = true)
+@ToString
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 //@TableName("bus_trade")
 public class OrderEntity extends BaseEntity implements Serializable {
-
-    //@TableId(type = IdType.AUTO)
-    //private Long id;   //主键
 
     private String payType;   //支付方式：1：支付宝；2：微信
 
@@ -33,11 +35,5 @@ public class OrderEntity extends BaseEntity implements Serializable {
     private String shopBody;   //商品描述
 
     private Integer orderStatus;   //订单状态：1：未完成；2：已完成；3：已取消
-
-    private Integer deleteFlag;   //删除状态：0：未删除；1：已删除
-
-    private Timestamp createTime;   //创建时间
-
-    private Timestamp updateTime;   //修改时间
 
 }
