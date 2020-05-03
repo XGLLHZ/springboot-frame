@@ -10,5 +10,6 @@ frame-common:   公共模块
 frame-mp:   小程序模块
 
 frame-web:   web 模块
+前端: https://github.com/XGLLHZ/springboot-frame.git
 
 
