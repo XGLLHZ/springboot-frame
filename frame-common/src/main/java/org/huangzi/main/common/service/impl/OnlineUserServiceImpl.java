@@ -1,5 +1,6 @@
 package org.huangzi.main.common.service.impl;
 
+import org.huangzi.main.common.dto.ExceptionDto;
 import org.huangzi.main.common.dto.OnlineUserDto;
 import org.huangzi.main.common.service.OnlineUserService;
 import org.huangzi.main.common.utils.*;
@@ -47,12 +48,12 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     @Override
     public APIResponse getListOnlineUser(String condition) {
         List<String> list = redisUtil.getListKey(ConstConfig.ONLINE_KEY + "*");
-        if (list.size() < 0) {
-            return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        if (list == null) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
         Collections.reverse(list);
         List<OnlineUserDto> list1 = new ArrayList<>();
-        OnlineUserDto onlineUserEntity1 = null;
+        OnlineUserDto onlineUserEntity1;
         for (String key : list) {
             onlineUserEntity1 = (OnlineUserDto) redisUtil.getValue(key);
             if (onlineUserEntity1 != null) {

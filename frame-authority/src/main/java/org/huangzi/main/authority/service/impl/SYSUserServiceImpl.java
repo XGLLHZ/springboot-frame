@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.huangzi.main.authority.entity.SYSUserRole;
 import org.huangzi.main.common.dto.ExceptionDto;
+import org.huangzi.main.common.dto.OnlineUserDto;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
 import org.huangzi.main.authority.entity.SYSRole;
@@ -15,6 +16,7 @@ import org.huangzi.main.authority.mapper.SYSUserRoleMapper;
 import org.huangzi.main.authority.service.SYSTokenService;
 import org.huangzi.main.authority.service.SYSUserRoleService;
 import org.huangzi.main.authority.service.SYSUserService;
+import org.huangzi.main.common.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,6 +56,9 @@ public class SYSUserServiceImpl extends ServiceImpl<SYSUserMapper, SYSUser> impl
 
     @Autowired
     SYSUserRoleService sysUserRoleService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public APIResponse list(SYSUser sysUser) {
@@ -246,6 +251,16 @@ public class SYSUserServiceImpl extends ServiceImpl<SYSUserMapper, SYSUser> impl
         if (res <= 0) {
             throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
+        return new APIResponse();
+    }
+
+    @Override
+    public APIResponse logout(SYSUser sysUser) {
+        OnlineUserDto onlineUserDto = (OnlineUserDto) redisUtil.getValue(ConstConfig.ONLINE_KEY + sysUser.getId());
+        if (onlineUserDto == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        }
+        redisUtil.deleteKey(ConstConfig.ONLINE_KEY + sysUser.getId());
         return new APIResponse();
     }
 

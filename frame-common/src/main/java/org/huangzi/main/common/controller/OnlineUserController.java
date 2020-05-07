@@ -27,8 +27,8 @@ public class OnlineUserController {
      */
     @LogAnnotation("在线用户")
     @RequestMapping("/list")
-    public APIResponse getListOnlineUser(@RequestBody OnlineUserDto onlineUserEntity) {
-        return onlineUserService.getListOnlineUser(onlineUserEntity.getUserName());
+    public APIResponse getListOnlineUser(@RequestBody OnlineUserDto onlineUserDto) {
+        return onlineUserService.getListOnlineUser(onlineUserDto.getUserName());
     }
 
 }

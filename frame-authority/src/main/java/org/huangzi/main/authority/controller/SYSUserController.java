@@ -109,4 +109,15 @@ public class SYSUserController {
         return sysUserService.updatePassWord(sysUser);
     }
 
+    /**
+     * 退出
+     * @param sysUser
+     * @return
+     */
+    @LogAnnotation("退出账号")
+    @RequestMapping("/logout")
+    public APIResponse logout(@RequestBody SYSUser sysUser) {
+        return sysUserService.logout(sysUser);
+    }
+
 }
