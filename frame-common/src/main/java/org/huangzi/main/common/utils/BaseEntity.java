@@ -3,6 +3,7 @@ package org.huangzi.main.common.utils;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -27,8 +28,10 @@ public class BaseEntity implements Serializable {
 
     private Integer deleteFlag;   //删除状态：0：未删除；1：已删除
 
+    @JsonSerialize(using = TimeSerialize.class)
     private Timestamp createTime;   //创建时间
 
+    @JsonSerialize(using = TimeSerialize.class)
     private Timestamp updateTime;   //修改时间
 
     @TableField(exist = false)

@@ -86,22 +86,22 @@ public class TestUtil {
 
         }
 
-        List<Student> list1 = new ArrayList<>(10);
-        for (int i = 0; i < 10; i++) {
+        List<Student> list1 = new ArrayList<>(5);
+        /*for (int i = 0; i < 10; i++) {
             Student student = new Student(i, "哈哈哈", null);
             list1.add(student);
-        }
-        /*list1.add(new Student(1, "陈杨", null));
+        }*/
+        list1.add(new Student(1, "陈杨", null));
         list1.add(new Student(2, "邓庆旭", null));
         list1.add(new Student(3, "付杨", null));
         list1.add(new Student(4, "郭浩", null));
-        list1.add(new Student(5, "贺宇轩", null));*/
+        list1.add(new Student(5, "贺宇轩", null));
 
-        List<Student> list2 = new ArrayList<>(10);
+        /*List<Student> list2 = new ArrayList<>(10);
         for (int i = 0; i < 10; i++) {
             Student student = new Student(i, "哈哈哈", i);
             list2.add(student);
-        }
+        }*/
         /*list2.add(new Student(1, "陈杨", 99));
         list2.add(new Student(2, "邓庆旭", 88));
         list2.add(new Student(3, "付杨", 77));
@@ -166,9 +166,9 @@ public class TestUtil {
         long s = TimeUnit.NANOSECONDS.toMillis(n - m);
         System.out.println("耗时: " + s + " 占用内存: " + (mm - nn));*/
 
-        TestEntity testEntity = TestEntity.builder().id(1).testName("人世间子").testMessage("成功").build();
+//        TestEntity testEntity = TestEntity.builder().id(1).testName("人世间子").testMessage("成功").build();
 
-        System.out.println(TestEntity.builder().id(2).testName("哈哈哈").build().getTestName());
+//        System.out.println(TestEntity.builder().id(2).testName("哈哈哈").build().getTestName());
 
     }
 
