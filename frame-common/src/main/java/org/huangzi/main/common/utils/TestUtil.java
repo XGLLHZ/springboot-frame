@@ -71,7 +71,7 @@ public class TestUtil {
 //        List<String> list1 = list.stream().map(s -> s + s).collect(Collectors.toList());
 //        list1.forEach(s -> System.out.print(s + " "));
 
-        @Data
+        /*@Data
         @ToString
         @NoArgsConstructor
         @AllArgsConstructor
@@ -84,18 +84,18 @@ public class TestUtil {
 
             private Integer score;
 
-        }
+        }*/
 
-        List<Student> list1 = new ArrayList<>(5);
+//        List<Student> list1 = new ArrayList<>(5);
         /*for (int i = 0; i < 10; i++) {
             Student student = new Student(i, "哈哈哈", null);
             list1.add(student);
         }*/
-        list1.add(new Student(1, "陈杨", null));
+        /*list1.add(new Student(1, "陈杨", null));
         list1.add(new Student(2, "邓庆旭", null));
         list1.add(new Student(3, "付杨", null));
         list1.add(new Student(4, "郭浩", null));
-        list1.add(new Student(5, "贺宇轩", null));
+        list1.add(new Student(5, "贺宇轩", null));*/
 
         /*List<Student> list2 = new ArrayList<>(10);
         for (int i = 0; i < 10; i++) {
@@ -169,6 +169,17 @@ public class TestUtil {
 //        TestEntity testEntity = TestEntity.builder().id(1).testName("人世间子").testMessage("成功").build();
 
 //        System.out.println(TestEntity.builder().id(2).testName("哈哈哈").build().getTestName());
+
+        //创建了一个对象
+        String s1 = "s";
+        String s2 = "s";
+//        System.out.println(System.identityHashCode(s1));
+//        System.out.println(System.identityHashCode(s2));
+
+        String s3 = "q";
+        String s4 = s3;
+        System.out.println(System.identityHashCode(s3));
+        System.out.println(System.identityHashCode(s4));
 
     }
 

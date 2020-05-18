@@ -21,6 +21,6 @@ public class ContentEntity extends BaseEntity implements Serializable {
 
     private Integer objectId;   //类型id
 
-    private String content;   //富文本
+    private String content;   //内容: md、富文本
 
 }

@@ -1,7 +1,6 @@
 package org.huangzi.main.common.dto;
 
 import lombok.*;
-import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import org.huangzi.main.common.utils.BaseEntity;
 

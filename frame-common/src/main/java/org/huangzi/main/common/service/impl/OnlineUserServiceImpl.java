@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -36,13 +37,9 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         onlineUserEntity.setLoginIp(ip);
         onlineUserEntity.setLoginAddress(StringUtil.getAddressByIp(ip));
         onlineUserEntity.setLoginBrowser(StringUtil.getUserBrowser(request));
-        Long time = System.currentTimeMillis();
-        onlineUserEntity.setLoginTime(time.toString());
-        boolean res = redisUtil.setValue(ConstConfig.ONLINE_KEY + userId, onlineUserEntity, TokenUtil.EXPIRE_TIME/1000);
-        if (!res) {
-            return false;
-        }
-        return true;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        onlineUserEntity.setLoginTime(format.format(System.currentTimeMillis()));
+        return redisUtil.setValue(ConstConfig.ONLINE_KEY + userId, onlineUserEntity, TokenUtil.EXPIRE_TIME/1000);
     }
 
     @Override

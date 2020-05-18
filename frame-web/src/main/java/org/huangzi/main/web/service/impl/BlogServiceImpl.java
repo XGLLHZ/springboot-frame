@@ -141,6 +141,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
         if (res <= 0) {
             return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
+        contentEntity.setContent(blogEntity.getContent());
         res = contentMapper.updateById(contentEntity);
         if (res <= 0) {
             return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
