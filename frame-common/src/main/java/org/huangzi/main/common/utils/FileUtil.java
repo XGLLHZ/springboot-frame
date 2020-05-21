@@ -23,9 +23,9 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     //阿里云 OSS 对象存储
     private static final String END_POINT = "http://oss-cn-beijing.aliyuncs.com";   //北京
 
-    private static final String ACCESS_KEY_ID = "";   //accessKeyId
+    private static final String ACCESS_KEY_ID = "LTAI4G8n3yiZCAJWutLG9G8s";   //accessKeyId
 
-    private static final String ACCESS_KEY_SECRET = "";   //accessKeySecret
+    private static final String ACCESS_KEY_SECRET = "6xpJzJ02blrREqDadsA28pDrOswGEb";   //accessKeySecret
 
     private static final String BUCKET = "springboot-frame";   //bucket
 
