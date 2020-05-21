@@ -1,9 +1,9 @@
-package org.huangzi.main.common.service.impl;
+package org.huangzi.main.web.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.huangzi.main.common.entity.GroupUserEntity;
-import org.huangzi.main.common.mapper.GroupUserMapper;
-import org.huangzi.main.common.service.GroupUserService;
+import org.huangzi.main.web.entity.GroupUserEntity;
+import org.huangzi.main.web.mapper.GroupUserMapper;
+import org.huangzi.main.web.service.GroupUserService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 

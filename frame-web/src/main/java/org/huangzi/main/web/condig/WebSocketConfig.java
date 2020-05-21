@@ -1,4 +1,4 @@
-package org.huangzi.main.common.config;
+package org.huangzi.main.web.condig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

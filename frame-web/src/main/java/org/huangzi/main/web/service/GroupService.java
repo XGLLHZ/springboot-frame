@@ -1,7 +1,7 @@
-package org.huangzi.main.common.service;
+package org.huangzi.main.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.huangzi.main.common.entity.GroupEntity;
+import org.huangzi.main.web.entity.GroupEntity;
 import org.huangzi.main.common.utils.APIResponse;
 
 /**

@@ -1,4 +1,4 @@
-package org.huangzi.main.common.entity;
+package org.huangzi.main.web.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author: XGLLHZ
@@ -29,7 +28,5 @@ public class GroupUserEntity extends BaseEntity implements Serializable {
     private String userName;   //用户名
 
     private Integer onlineStatus;   //在线状态: 0: 全部; 1: 在线; 2: 离线
-
-    private List<SYSUserE>
 
 }

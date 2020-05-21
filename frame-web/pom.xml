@@ -25,6 +25,13 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- 权限模块 -->
+        <dependency>
+            <groupId>org.huangzi</groupId>
+            <artifactId>authority</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 </project>

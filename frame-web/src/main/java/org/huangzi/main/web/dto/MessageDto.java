@@ -1,4 +1,4 @@
-package org.huangzi.main.common.dto;
+package org.huangzi.main.web.dto;
 
 import lombok.*;
 
@@ -25,5 +25,7 @@ public class MessageDto implements Serializable {
     private String content;   //消息内容
 
     private String sendTime;   //发送时间
+
+    private Integer onlineNum;   //上线人数
 
 }

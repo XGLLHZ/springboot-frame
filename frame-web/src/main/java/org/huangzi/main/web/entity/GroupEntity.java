@@ -1,4 +1,4 @@
-package org.huangzi.main.common.entity;
+package org.huangzi.main.web.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import org.huangzi.main.common.utils.BaseEntity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author: XGLLHZ
@@ -28,5 +29,14 @@ public class GroupEntity extends BaseEntity implements Serializable {
 
     @TableField(exist = false)
     private Integer userId;   //用户 id
+
+    @TableField(exist = false)
+    private List<GroupUserEntity> userList;   //成员列表
+
+    @TableField(exist = false)
+    private Integer onlineNum;   //在线人数
+
+    @TableField(exist = false)
+    private Integer offlineNum;   //离线人数
 
 }

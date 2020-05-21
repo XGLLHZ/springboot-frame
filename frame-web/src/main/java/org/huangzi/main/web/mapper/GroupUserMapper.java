@@ -1,7 +1,7 @@
-package org.huangzi.main.common.mapper;
+package org.huangzi.main.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.huangzi.main.common.entity.GroupUserEntity;
+import org.huangzi.main.web.entity.GroupUserEntity;
 
 /**
  * @author: XGLLHZ

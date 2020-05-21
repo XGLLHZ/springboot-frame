@@ -1,20 +1,24 @@
-package org.huangzi.main.common.service.impl;
+package org.huangzi.main.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.huangzi.main.common.dto.ExceptionDto;
-import org.huangzi.main.common.entity.GroupEntity;
-import org.huangzi.main.common.mapper.GroupMapper;
-import org.huangzi.main.common.service.GroupService;
+import org.huangzi.main.web.entity.GroupEntity;
+import org.huangzi.main.web.entity.GroupUserEntity;
+import org.huangzi.main.web.mapper.GroupMapper;
+import org.huangzi.main.web.mapper.GroupUserMapper;
+import org.huangzi.main.web.service.GroupService;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author: XGLLHZ
@@ -28,6 +32,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupEntity> impl
     @Autowired
     private GroupMapper groupMapper;
 
+    @Autowired
+    private GroupUserMapper groupUserMapper;
+
     @Override
     public APIResponse getList(GroupEntity groupEntity) {
         List<GroupEntity> list = groupMapper.selectList(new QueryWrapper<GroupEntity>()
@@ -37,18 +44,47 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupEntity> impl
         }
         Map<String, Object> map = new HashMap<>(2);
         map.put(ConstConfig.DATA_LIST, list);
-        map.put(ConstConfig.TOTAL, list.size());
         return new APIResponse(map);
     }
 
     @Override
     public APIResponse getGroup(GroupEntity groupEntity) {
-        return null;
+        GroupEntity groupEntity1 = groupMapper.selectById(groupEntity.getId());
+        if (groupEntity1 == null) {
+            throw new ExceptionDto(ConstConfig.RE_NO_EXIST_ERROR_CODE, ConstConfig.RE_NO_EXIST_ERROR_MESSAGE);
+        }
+        List<GroupUserEntity> list = groupUserMapper.selectList(new QueryWrapper<GroupUserEntity>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("group_id", groupEntity.getId()));
+        if (list == null) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        long onlineNum = list.stream().filter(s -> s.getOnlineStatus() == 1).count();
+        long offlineNum = list.stream().filter(s -> s.getOnlineStatus() == 2).count();
+        groupEntity1.setOnlineNum((int) onlineNum);
+        groupEntity1.setOfflineNum((int) offlineNum);
+        groupEntity1.setUserList(list);
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(ConstConfig.DATA_INFO, groupEntity1);
+        return new APIResponse(map);
     }
 
     @Override
     public APIResponse getMyGroup(GroupEntity groupEntity) {
-        return null;
+        List<GroupUserEntity> list = groupUserMapper.selectList(new QueryWrapper<GroupUserEntity>()
+                .eq("delete_flag", ConstConfig.DELETE_FLAG_ZONE)
+                .eq("user_id", groupEntity.getUserId()));
+        if (list == null) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<GroupEntity> list1 = new ArrayList<>();
+        if (list.size() > 0) {
+            List<Integer> ids = list.stream().map(GroupUserEntity::getGroupId).collect(Collectors.toList());
+            list1 = groupMapper.selectBatchIds(ids);
+        }
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(ConstConfig.DATA_LIST, list1);
+        return new APIResponse(map);
     }
 
 }
