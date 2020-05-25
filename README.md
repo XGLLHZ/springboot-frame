@@ -19,7 +19,7 @@ frame-web:   web 模块
 
 ![登录页](https://github.com/XGLLHZ/springboot-frame/blob/master/static/login.png)
 
-![管理系统首页](https://github.com/XGLLHZ/springboot-frame/blob/master/static/admin-index.png)
+![管理系统首页](https://github.com/XGLLHZ/springboot-frame/blob/master/static/adminindex.png)
 
 ![日志页](https://github.com/XGLLHZ/springboot-frame/blob/master/static/log.png)
 
