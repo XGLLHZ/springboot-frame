@@ -19,7 +19,7 @@ spring:
     allow-bean-definition-overriding: true
   redis:   #redis数据库配置
     database: 0   #数据库索引，默认为0
-    host: 119.23.234.176   #地址
+    host:    #地址
     port: 6379   #端口号，默认为6379
     password:    #密码，默认为空
     jedis:
@@ -33,8 +33,8 @@ spring:
 ######################## tomcat 相关配置 ########################
 server:   #服务配置
   port: 8082   #端口号
-  servlet:
-    context-path: /api
+  #servlet:
+  #  context-path: /api
   tomcat:
     uri-encoding: UTF-8
     max-threads: 1000   #tomcat最大线程数
@@ -64,8 +64,14 @@ mybatis-plus:   #mybatisplus配置s
 wx:
   ma:
     configs:
-      - appId: asdsad
-        appSecret: asdsad
-        token: asdsad
-        aesKey: asdasd
-        msgFormat: asdasd
+      - appId:
+        appSecret:
+        token: xgllhz
+        aesKey:
+        msgFormat:
+  mp:
+    configs:
+      - appId:
+        appSecret:
+        token: xgllhz
+        aesKey:

@@ -35,10 +35,10 @@ public class FilterRequestRole implements FilterInvocationSecurityMetadataSource
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
         //如果请求地址为 /admin/user/login || /admin/user/login_code 则放行
         if ("/admin/user/login".equals(requestUrl) || "/admin/user/login_code".equals(requestUrl)) {
-            log.info("当前请求地址：" + requestUrl + "，为登录或获取登录码请求，不校验权限");
+            //log.info("当前请求地址：" + requestUrl + "，为登录或获取登录码请求，不校验权限");
             return null;
         }
-        log.info("当前请求地址：" + requestUrl + "，需要校验权限");
+        //log.info("当前请求地址：" + requestUrl + "，需要校验权限");
         //获取所有权限（数据库中所有的url）及其对应的角色列表
         List<SYSPermission> list = sysPermMapper.allUrlRole();
         AntPathMatcher antPathMatcher = new AntPathMatcher();
@@ -54,7 +54,7 @@ public class FilterRequestRole implements FilterInvocationSecurityMetadataSource
             }
         }
         //没有匹配上的地址则单独创建一个登录 的角色集合（实际上没有这个角色），后面会对这个角色单独处理
-        log.info("当前请求地址：" + requestUrl + "，没有匹配到权限，则赋给默认登录 LOGIN_ROLE 角色");
+        //log.info("当前请求地址：" + requestUrl + "，没有匹配到权限，则赋给默认登录 LOGIN_ROLE 角色");
         return SecurityConfig.createList("LOGIN_ROLE");
     }
 

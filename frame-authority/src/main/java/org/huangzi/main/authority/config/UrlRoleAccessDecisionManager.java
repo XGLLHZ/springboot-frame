@@ -40,10 +40,10 @@ public class UrlRoleAccessDecisionManager implements AccessDecisionManager {
             String requestRole = configuration.getAttribute();
             //如果角色为 LOGIN_ROLE ，则说明当前的请求不需要任何角色，所以直接放过
             if ("LOGIN_ROLE".equals(requestRole)) {
-                log.info("当前请求地址拥有角色：" + requestRole + "，如果是 LOGIN_ROLE，则直接放行");
+                //log.info("当前请求地址拥有角色：" + requestRole + "，如果是 LOGIN_ROLE，则直接放行");
                 return;
             }
-            log.info("当前请求地址拥有角色：" + requestRole + "，如果不是 LOGIN_ROLE，则判断当前用户是否具有此角色");
+            //log.info("当前请求地址拥有角色：" + requestRole + "，如果不是 LOGIN_ROLE，则判断当前用户是否具有此角色");
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             for (GrantedAuthority authority : authorities) {
                 if (authority.getAuthority().equals(requestRole)) {

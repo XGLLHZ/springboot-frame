@@ -40,17 +40,17 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- 微信模块 -->
+        <dependency>
+            <groupId>org.huangzi</groupId>
+            <artifactId>wx</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- goods 商品模块 -->
         <dependency>
             <groupId>org.huangzi</groupId>
             <artifactId>goods</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <!-- 小程序模块 -->
-        <dependency>
-            <groupId>org.huangzi</groupId>
-            <artifactId>ma</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

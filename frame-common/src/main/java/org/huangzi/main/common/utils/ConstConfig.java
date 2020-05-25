@@ -13,6 +13,8 @@ public class ConstConfig {
     public static final String APP_ID = "";
     // app_secret
     public static final String APP_SECRET = "";
+    //token
+    public static final String APP_TOKEN = "xgllhz";
     //内网 ip
     public static final String REGION = "内网IP|内网IP";
     //在线用户 redis-key
