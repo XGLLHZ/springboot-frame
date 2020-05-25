@@ -21,9 +21,9 @@ public class ShortMsgUtil {
 
     private static final String ALI_PRODUCT_URL = "dysmsapig.aliyuncs.com";   //产品域名
 
-    private static final String ALI_ACCESS_KEY_ID = "LTAI4FhArnvkXAAn2ThGV9dv";   //key id
+    private static final String ALI_ACCESS_KEY_ID = "";   //key id
 
-    private static final String ALI_ACCESS_KEY_SECRET = "lg2RVU0TkjV19oyqrhh9UiiBtPy7Vu";   //key 密钥
+    private static final String ALI_ACCESS_KEY_SECRET = "";   //key 密钥
 
     private static final String ALI_SIGN_NAME = "人世间子";   //短信签名
 
@@ -31,7 +31,7 @@ public class ShortMsgUtil {
 
     private static final Integer TXUN_APP_ID = 1400258417;   //应用 app_id
 
-    private static final String TXUN_APP_KEY = "5efe519b58570b4e691a628cabae5f69";   //应用 app_key
+    private static final String TXUN_APP_KEY = "";   //应用 app_key
 
     private static final String TXUN_SIGN_NAME_ID = "人世间子";   //签名 id
 

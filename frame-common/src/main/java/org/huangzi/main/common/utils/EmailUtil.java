@@ -18,7 +18,7 @@ public class EmailUtil {
 
     private static final String FROM_ACCOUNT = "guohaopp@163.com";   //发送方账号
 
-    private static final String GRAN_CODE = "xgllhz1003";   //授权码
+    private static final String GRAN_CODE = "";   //授权码
 
     private static final String URL = "http://localhost:8081/api/admin/user/activate";   //激活链接地址
 
