@@ -1,5 +1,6 @@
 package org.huangzi.main.common.controller;
 
+import org.huangzi.main.common.config.DataConfig;
 import org.huangzi.main.common.utils.StringUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ public class UtilTest {
 
     @RequestMapping("/test")
     public String test() {
+        System.out.println(DataConfig.getFromAccount());
         return "Hello Util1!";
     }
 

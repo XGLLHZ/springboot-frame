@@ -9,6 +9,7 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
+import org.huangzi.main.common.config.DataConfig;
 
 /**
  * @author: XGLLHZ
@@ -16,30 +17,6 @@ import com.github.qcloudsms.SmsSingleSenderResult;
  * @description: 短信工具类
  */
 public class ShortMsgUtil {
-
-    private static final String ALI_PRODUCT = "Dysmsapi";   //产品名称
-
-    private static final String ALI_PRODUCT_URL = "dysmsapig.aliyuncs.com";   //产品域名
-
-    private static final String ALI_ACCESS_KEY_ID = "";   //key id
-
-    private static final String ALI_ACCESS_KEY_SECRET = "";   //key 密钥
-
-    private static final String ALI_SIGN_NAME = "人世间子";   //短信签名
-
-    private static final String ALI_TEMPLATE_CODE = "SMS_174023364";   //短信模板
-
-    private static final Integer TXUN_APP_ID = 1400258417;   //应用 app_id
-
-    private static final String TXUN_APP_KEY = "";   //应用 app_key
-
-    private static final String TXUN_SIGN_NAME_ID = "人世间子";   //签名 id
-
-    private static final Integer TXUN_TEMPLATE_ID = 420791;   //模板 id
-
-    private static final Integer PRONHUB = 420843;
-
-    private static final String TXUN_SMSG_CODE = "86";   //区号
 
     /**
      * 短信验证码（阿里云） 假设用户账号是手机号
@@ -49,14 +26,14 @@ public class ShortMsgUtil {
      */
     public static Integer sendSMsgCodeALi(String mobile, String code) {
         Integer result = 1;
-        IClientProfile iClientProfile = DefaultProfile.getProfile("cn-hangzhou", ALI_ACCESS_KEY_ID, ALI_ACCESS_KEY_SECRET);
+        IClientProfile iClientProfile = DefaultProfile.getProfile("cn-hangzhou", DataConfig.getAccessKey(), DataConfig.getAccessSecret());
         try {
-            DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", ALI_PRODUCT, ALI_PRODUCT_URL);
+            DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", DataConfig.getProduct(), DataConfig.getProductUrl());
             IAcsClient iAcsClient = new DefaultAcsClient(iClientProfile);
             SendSmsRequest request = new SendSmsRequest();
             request.setPhoneNumbers(mobile);
-            request.setSignName(ALI_SIGN_NAME);
-            request.setTemplateCode(ALI_TEMPLATE_CODE);
+            request.setSignName(DataConfig.getSignName());
+            request.setTemplateCode(DataConfig.getTemplateCode());
             request.setTemplateParam("\"code\":\"" + code + "\"}");
             SendSmsResponse response = iAcsClient.getAcsResponse(request);
             if (response.getCode() != null && "OK".equals(response.getCode())) {
@@ -79,9 +56,9 @@ public class ShortMsgUtil {
     public static Integer sendSMsgCodeTXun(String mobile, String[] code) {
         Integer result = 1;
         try {
-            SmsSingleSender smsSingleSender = new SmsSingleSender(TXUN_APP_ID, TXUN_APP_KEY);
-            SmsSingleSenderResult smsSingleSenderResult = smsSingleSender.sendWithParam(TXUN_SMSG_CODE,
-                    mobile, TXUN_TEMPLATE_ID, code, TXUN_SIGN_NAME_ID, "", "");
+            SmsSingleSender smsSingleSender = new SmsSingleSender(DataConfig.getAppId(), DataConfig.getAppKey());
+            SmsSingleSenderResult smsSingleSenderResult = smsSingleSender.sendWithParam(DataConfig.getSmsgCode(),
+                    mobile, DataConfig.getTemplateId(), code, DataConfig.getSignNameId(), "", "");
             result = smsSingleSenderResult.result;
         } catch (Exception e) {
             e.printStackTrace();

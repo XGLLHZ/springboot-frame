@@ -36,7 +36,7 @@ public class SubscribeHandler extends AbstractHandler {
             log.error("\n获取微信用户信息失败！");
             e.printStackTrace();
         }*/
-        return new TextBuilder().build("官人，奴家等候多时了呢！", wxMpXmlMessage, wxMpService);
+        return new TextBuilder().build("客官请上座！", wxMpXmlMessage, wxMpService);
     }
 
 }

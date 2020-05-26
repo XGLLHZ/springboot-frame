@@ -1,5 +1,7 @@
 package org.huangzi.main.common.utils;
 
+import org.huangzi.main.common.config.DataConfig;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -15,10 +17,6 @@ import java.util.Properties;
 public class EmailUtil {
 
     private static final String FROM = "香格里拉集团";   //发送方昵称;
-
-    private static final String FROM_ACCOUNT = "guohaopp@163.com";   //发送方账号
-
-    private static final String GRAN_CODE = "";   //授权码
 
     private static final String URL = "http://localhost:8081/api/admin/user/activate";   //激活链接地址
 
@@ -37,7 +35,7 @@ public class EmailUtil {
                     + URL + "?id=" + userId + "</a></p>";
             message.setSubject("香格里拉集团 | 账号激活");   //邮件主题
             message.setSentDate(new Date());
-            message.setFrom(new InternetAddress(FROM_ACCOUNT, FROM, "UTF-8"));
+            message.setFrom(new InternetAddress(DataConfig.getFromAccount(), FROM, "UTF-8"));
             message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(userName));
             message.setContent(content, "text/html;charset=gb2312");
             Transport.send(message);
@@ -62,7 +60,7 @@ public class EmailUtil {
                     + "<p>&nbsp;&nbsp;&nbsp;&nbsp;" + code + "</p>";
             message.setSubject("香格里拉集团 | 验证码");   //邮件主题
             message.setSentDate(new Date());
-            message.setFrom(new InternetAddress(FROM_ACCOUNT, FROM, "UTF-8"));
+            message.setFrom(new InternetAddress(DataConfig.getFromAccount(), FROM, "UTF-8"));
             message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(userName));
             message.setContent(content, "text/html;charset=gb2312");
             Transport.send(message);
@@ -86,7 +84,7 @@ public class EmailUtil {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(FROM_ACCOUNT, GRAN_CODE);
+                return new PasswordAuthentication(DataConfig.getFromAccount(), DataConfig.getGrantCode());
             }
         });
         return session;
@@ -99,6 +97,7 @@ public class EmailUtil {
         String code =  RandomUtil.sixCode();
         *//*EmailUtil.sendActivateLik(sysUser);*//*
         EmailUtil.sendEmailCode(sysUser, code);*/
+        System.out.println(DataConfig.getFromAccount());
     }
 
 }

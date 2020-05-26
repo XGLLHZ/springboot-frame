@@ -121,4 +121,10 @@ public class ConstConfig {
     public static final Integer RE_CANNOT_DEL_CODE = 119;
     public static final String RE_CANNOT_DEL_MESSAGE = "这些文件不是你传的哦！";
 
+    /*****************************公众号*******************************/
+
+    //微信公众号授权失败
+    public static final Integer RE_MP_AUTHORIZE_ERROR_CODE = 3301;
+    public static final String RE_MP_AUTHORIZE_ERROR_MESSAGE = "公众号授权失败！";
+
 }

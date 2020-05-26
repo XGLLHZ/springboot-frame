@@ -19,7 +19,7 @@ spring:
     allow-bean-definition-overriding: true
   redis:   #redis数据库配置
     database: 0   #数据库索引，默认为0
-    host:    #地址
+    host: 119.23.234.176   #地址
     port: 6379   #端口号，默认为6379
     password:    #密码，默认为空
     jedis:
@@ -64,14 +64,43 @@ mybatis-plus:   #mybatisplus配置s
 wx:
   ma:
     configs:
-      - appId:
-        appSecret:
+      - appId: wx4f8d0246e226cdc0
+        appSecret: fc5ceed936c8e031734e9c25057cce09
         token: xgllhz
-        aesKey:
+        aesKey: cWJbSfekX1lrDoIDhx5jT2lhXjihGAIGE3pEhHXOR0B
         msgFormat:
   mp:
     configs:
-      - appId:
-        appSecret:
+      - appId: wx4f8d0246e226cdc0
+        appSecret: fc5ceed936c8e031734e9c25057cce09
         token: xgllhz
-        aesKey:
+        aesKey: cWJbSfekX1lrDoIDhx5jT2lhXjihGAIGE3pEhHXOR0B
+
+###################### 邮件、短信、文件 ######################
+common:
+  email:
+    fromAccount: @163.com
+    grantCode:
+  msg:
+    ali:
+      product:
+      productUrl: dysmsapig.aliyuncs.com
+      accessKey:
+      accessSecret:
+      signName: 人世间子
+      templateCode: SMS_174023364
+    tencent:
+      appId:
+      appKey:
+      signNameId: 人世间子
+      templateId: 420791
+      pronhubId: 420843
+      smsgCode: 86
+  oss:
+    endPoint: http://oss-cn-beijing.aliyuncs.com
+    keyId:
+    keySecret:
+    bucket: springboot-frame
+    fileDir: admin/
+    imageUrl: http://springboot-frame.oss-cn-beijing.aliyuncs.com/admin/images/
+
