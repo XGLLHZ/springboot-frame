@@ -4,6 +4,8 @@ import lombok.*;
 import org.huangzi.main.common.entity.TestEntity;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -176,10 +178,18 @@ public class TestUtil {
 //        System.out.println(System.identityHashCode(s1));
 //        System.out.println(System.identityHashCode(s2));
 
-        String s3 = "q";
+        /*String s3 = "q";
         String s4 = s3;
         System.out.println(System.identityHashCode(s3));
-        System.out.println(System.identityHashCode(s4));
+        System.out.println(System.identityHashCode(s4));*/
+
+        String c = null;
+        try {
+            c = URLEncoder.encode(".com","utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println(c);
 
     }
 

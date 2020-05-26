@@ -64,42 +64,42 @@ mybatis-plus:   #mybatisplus配置s
 wx:
   ma:
     configs:
-      - appId: wx4f8d0246e226cdc0
-        appSecret: fc5ceed936c8e031734e9c25057cce09
+      - appId:
+        appSecret:
         token: xgllhz
         aesKey: cWJbSfekX1lrDoIDhx5jT2lhXjihGAIGE3pEhHXOR0B
         msgFormat:
   mp:
     configs:
-      - appId: wx4f8d0246e226cdc0
-        appSecret: fc5ceed936c8e031734e9c25057cce09
+      - appId:
+        appSecret:
         token: xgllhz
         aesKey: cWJbSfekX1lrDoIDhx5jT2lhXjihGAIGE3pEhHXOR0B
 
 ###################### 邮件、短信、文件 ######################
 common:
   email:
-    fromAccount: @163.com
-    grantCode:
+    fromAccount: guohaopp@163.com
+    grantCode: xgllhz1003
   msg:
     ali:
-      product:
+      product: Dysmsapi
       productUrl: dysmsapig.aliyuncs.com
-      accessKey:
-      accessSecret:
+      accessKey: LTAI4FhArnvkXAAn2ThGV9dv
+      accessSecret: lg2RVU0TkjV19oyqrhh9UiiBtPy7Vu
       signName: 人世间子
       templateCode: SMS_174023364
     tencent:
-      appId:
-      appKey:
+      appId: 1400258417
+      appKey: 5efe519b58570b4e691a628cabae5f69
       signNameId: 人世间子
       templateId: 420791
       pronhubId: 420843
       smsgCode: 86
   oss:
     endPoint: http://oss-cn-beijing.aliyuncs.com
-    keyId:
-    keySecret:
+    keyId: LTAI4G8n3yiZCAJWutLG9G8s
+    keySecret: 6xpJzJ02blrREqDadsA28pDrOswGEb
     bucket: springboot-frame
     fileDir: admin/
     imageUrl: http://springboot-frame.oss-cn-beijing.aliyuncs.com/admin/images/
