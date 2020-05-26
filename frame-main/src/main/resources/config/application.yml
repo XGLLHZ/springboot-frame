@@ -79,27 +79,27 @@ wx:
 ###################### 邮件、短信、文件 ######################
 common:
   email:
-    fromAccount: guohaopp@163.com
-    grantCode: xgllhz1003
+    fromAccount: @163.com
+    grantCode:
   msg:
     ali:
-      product: Dysmsapi
+      product:
       productUrl: dysmsapig.aliyuncs.com
-      accessKey: LTAI4FhArnvkXAAn2ThGV9dv
-      accessSecret: lg2RVU0TkjV19oyqrhh9UiiBtPy7Vu
+      accessKey:
+      accessSecret:
       signName: 人世间子
       templateCode: SMS_174023364
     tencent:
-      appId: 1400258417
-      appKey: 5efe519b58570b4e691a628cabae5f69
+      appId:
+      appKey:
       signNameId: 人世间子
       templateId: 420791
       pronhubId: 420843
       smsgCode: 86
   oss:
     endPoint: http://oss-cn-beijing.aliyuncs.com
-    keyId: LTAI4G8n3yiZCAJWutLG9G8s
-    keySecret: 6xpJzJ02blrREqDadsA28pDrOswGEb
+    keyId:
+    keySecret:
     bucket: springboot-frame
     fileDir: admin/
     imageUrl: http://springboot-frame.oss-cn-beijing.aliyuncs.com/admin/images/
