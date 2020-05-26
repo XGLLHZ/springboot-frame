@@ -15,6 +15,8 @@ frame-web:   web 模块
 
 在线体验地址: http://www.xgllhz.top
 
+管理系统: http://www.xgllhz.top/#/admin/login  test   123456
+
 ![首页](https://github.com/XGLLHZ/springboot-frame/blob/master/static/index.png)
 
 ![登录页](https://github.com/XGLLHZ/springboot-frame/blob/master/static/login.png)
