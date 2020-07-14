@@ -7,7 +7,11 @@ import org.huangzi.main.common.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author: XGLLHZ
@@ -31,6 +35,20 @@ public class LogController {
     @RequestMapping("/get")
     public APIResponse getLog(@RequestBody LogEntity logEntity) {
         return logService.getLog(logEntity);
+    }
+
+    @LogAnnotation("导出日志")
+    @RequestMapping("/export")
+    public void exportLog(@RequestBody LogEntity logEntity, HttpServletResponse response) {
+        logEntity.setCurrentPage(-1);
+        logEntity.setPageSize(-1);
+        logService.exportLog(logEntity, response);
+    }
+
+    @LogAnnotation("导入日志")
+    @RequestMapping("/import")
+    public APIResponse importLog(@RequestParam("file") MultipartFile file) {
+        return logService.importLog(file);
     }
 
 }

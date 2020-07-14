@@ -1,5 +1,7 @@
 package org.huangzi.main.common.dto;
 
+import org.huangzi.main.common.utils.ConstConfig;
+
 /**
  * @author: XGLLHZ
  * @date: 2020/4/10 下午2:35
@@ -42,5 +44,7 @@ public class ExceptionDto extends RuntimeException {
     public Integer getCode() {
         return code;
     }
+
+    public static final ExceptionDto TOKEN_EXPIRE = new ExceptionDto(ConstConfig.RE_LOGIN_EXPIRE_CODE, ConstConfig.RE_LOGIN_EXPIRE_MSG);
 
 }

@@ -19,14 +19,4 @@ import org.springframework.stereotype.Service;
 @Component("sysTokenService")
 public class SYSTokenServiceImpl extends ServiceImpl<SYSTokenMapper, SYSToken> implements SYSTokenService {
 
-    @Override
-    public String createToken(int userId) {
-        return TokenUtil.createJWS(String.valueOf(userId));
-    }
-
-    @Override
-    public Integer checkToken(String token) {
-        return TokenUtil.checkJWS(token);
-    }
-
 }

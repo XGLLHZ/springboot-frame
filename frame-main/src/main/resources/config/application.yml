@@ -19,7 +19,7 @@ spring:
     allow-bean-definition-overriding: true
   redis:   #redis数据库配置
     database: 0   #数据库索引，默认为0
-    host: 119.23.234.176   #地址
+    host:   #地址
     port: 6379   #端口号，默认为6379
     password:    #密码，默认为空
     jedis:
@@ -29,12 +29,15 @@ spring:
         max-idle: 8   #连接池中的最大空闲连接
         min-idle: 0   #连接池中的最小空闲连接
     timeout: 5000   #连接超时时间（毫秒）
+  rabbitmq:
+    host:
+    port: 5672
+    username: guest
+    password: guest
 
 ######################## tomcat 相关配置 ########################
 server:   #服务配置
   port: 8082   #端口号
-  #servlet:
-  #  context-path: /api
   tomcat:
     uri-encoding: UTF-8
     max-threads: 1000   #tomcat最大线程数
@@ -66,41 +69,41 @@ wx:
     configs:
       - appId:
         appSecret:
-        token: xgllhz
-        aesKey: cWJbSfekX1lrDoIDhx5jT2lhXjihGAIGE3pEhHXOR0B
+        token:
+        aesKey:
         msgFormat:
   mp:
     configs:
       - appId:
         appSecret:
-        token: xgllhz
-        aesKey: cWJbSfekX1lrDoIDhx5jT2lhXjihGAIGE3pEhHXOR0B
+        token:
+        aesKey:
 
 ###################### 邮件、短信、文件 ######################
 common:
   email:
-    fromAccount: @163.com
+    fromAccount:
     grantCode:
   msg:
     ali:
       product:
-      productUrl: dysmsapig.aliyuncs.com
+      productUrl:
       accessKey:
       accessSecret:
-      signName: 人世间子
-      templateCode: SMS_174023364
+      signName:
+      templateCode:
     tencent:
       appId:
       appKey:
-      signNameId: 人世间子
-      templateId: 420791
-      pronhubId: 420843
-      smsgCode: 86
+      signNameId:
+      templateId:
+      pronhubId:
+      smsgCode:
   oss:
-    endPoint: http://oss-cn-beijing.aliyuncs.com
+    endPoint:
     keyId:
     keySecret:
-    bucket: springboot-frame
-    fileDir: admin/
-    imageUrl: http://springboot-frame.oss-cn-beijing.aliyuncs.com/admin/images/
+    bucket:
+    fileDir:
+    imageUrl:
 

@@ -1,11 +1,13 @@
 package org.huangzi.main.common.utils;
 
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
+import org.huangzi.main.common.dto.ExceptionDto;
+import org.huangzi.main.common.dto.TokenDto;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -15,8 +17,10 @@ import java.util.UUID;
  */
 public class TokenUtil {
 
+    public static final String ISS = "XGLLHZ";
+
     //token有效时间 两小时
-    public static final long EXPIRE_TIME = 7200000;
+    public static final long EXPIRE_TIME = 2 * 60 * 60 * 1000;
 
     //签名密钥
     private static final String TOKEN_SECRET = "f26e587c28064d0e855e72c0a6a0e618";
@@ -28,11 +32,12 @@ public class TokenUtil {
     private static final Integer JWT_BE_OVERDUE_CODE = 1002;
 
     /**
-     * 生成JWS      JWT签名后称为JWS
-     * @param subject 用户id 即生成的JWS的唯一所有人
+     * 创建 token
+     * @param tokenDto 用户信息
+     * @param audience 接收者
      * @return
      */
-    public static String createJWS(String subject) {
+    public static String createToken(TokenDto tokenDto, String audience) {
 
         SecretKeySpec key = new SecretKeySpec(TOKEN_SECRET.getBytes(), "HmacSHA256");   //签名密钥
 
@@ -41,33 +46,58 @@ public class TokenUtil {
         long expireTime = createTime + EXPIRE_TIME;   //JWT有效时间
         Date expireDate = new Date(expireTime);
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", tokenDto.getUserId());
+        map.put("userName", tokenDto.getUserName());
+        map.put("userType", tokenDto.getUserType());
+
         JwtBuilder builder = Jwts.builder();   //new 一个JwtBuilder来设置JWT的body
 
         builder.setId(getUUID())   //设置jti(JWT ID)：是JWT的唯一标识，主要用来作为一次性token，从而回避重放攻击
+                .setClaims(map)   //自定义属性
+                .setIssuer(ISS)
                 .signWith(key)   //指定密钥
                 .setIssuedAt(createDate)   //JWT签发时间
-                .setSubject(subject)   //JWT的主体，即所有人，一般为userId等
+                .setNotBefore(createDate)
+                .setSubject(tokenDto.getUserId() + "")   //JWT的主体，即所有人，一般为userId等
+                .setAudience(audience)   //接收者
                 .setExpiration(expireDate);   //失效时间
         return builder.compact();   //开始压缩
     }
 
     /**
-     * 验证JWS
-     *      验证JWT时的签名密钥跟生成时的签名密钥相同，且生成将其存入数据库，
-     *      所以验证时如果抛出异常，只能是过期
-     * @param jwsString
-     * @return 1001：有效；1002：无效-过期
+     * 验证 token
+     * @param token
+     * @return
      */
-    public static Integer checkJWS(String jwsString) {
+    public static Integer checkToken(String token) {
 
         SecretKeySpec key = new SecretKeySpec(TOKEN_SECRET.getBytes(), "HmacSHA256");   //签名密钥
 
         try {
-            Jwts.parser().setSigningKey(key).parseClaimsJws(jwsString);
+            Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         } catch (JwtException e) {
             return JWT_BE_OVERDUE_CODE;
         }
         return JWT_BE_BOT_OVERDUE_CODE;
+    }
+
+    /**
+     * 根据 key 获取用户信息
+     * @param token
+     * @param key
+     * @return
+     */
+    public static Object getValue(String token, String key) {
+
+        SecretKeySpec keys = new SecretKeySpec(TOKEN_SECRET.getBytes(), "HmacSHA256");   //签名密钥
+
+        try {
+            Claims claims = Jwts.parser().setSigningKey(keys).parseClaimsJws(token).getBody();
+            return claims.get(key);
+        } catch (JwtException e) {
+            throw ExceptionDto.TOKEN_EXPIRE;
+        }
     }
 
     /**
@@ -83,13 +113,14 @@ public class TokenUtil {
      * @param args
      */
     public static void main(String[] args) {
-        String subject = "1";
-        System.out.println(TokenUtil.createJWS(subject));
-        /*String s = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsIlVzZXJBY2NvdW50Ijoi" +
-                "YWRtaW4iLCJqdGkiOiI4NDU5YjljMThkMTU0NGZmOTZkNmQ1YTI2ZTNjZDJi" +
-                "NiIsImlhdCI6MTU2NzY2NzY3OCwic3ViIjoiMSIsImV4cCI6MTU2NzY2Nzcz" +
-                "OH0.-nqh-ppYQkhSvUXBg7rS-sWRSNxHqOWQ2WmEhkp6Pb0";
-        System.out.println(TokenUtil.checkJWS(s));*/
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setUserId(1);
+        tokenDto.setUserName("香格里拉皇子");
+        tokenDto.setUserType(1);
+        System.out.println(TokenUtil.createToken(tokenDto, "wx"));
+        String s = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyVHlwZSI6MSwidXNlck5hbWUiOiLpppnmoLzph4zmi4nnmoflrZAiLCJ1c2VySWQiOjEsImlzcyI6IlhHTExIWiIsImlhdCI6MTU5MjQwMzU3MCwibmJmIjoxNTkyNDAzNTcwLCJzdWIiOiIxIiwiYXVkIjoid3giLCJleHAiOjE1OTI0MDM2MzB9.GhrKwrgjPeGJmo_oU4Mjhz7AOeBYZxiQzdIVY3ENa4c";
+        System.out.println(TokenUtil.checkToken(s));
+        System.out.println(getValue(s, "userName"));
     }
 
 }

@@ -39,7 +39,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         onlineUserEntity.setLoginBrowser(StringUtil.getUserBrowser(request));
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         onlineUserEntity.setLoginTime(format.format(System.currentTimeMillis()));
-        return redisUtil.setValue(ConstConfig.ONLINE_KEY + userId, onlineUserEntity, TokenUtil.EXPIRE_TIME/1000);
+        return redisUtil.setValue(ConstConfig.ONLINE_KEY + userId, onlineUserEntity, 24 * 60 * 60/1000);
     }
 
     @Override

@@ -32,12 +32,12 @@ public class WebSocketController {
                        @PathParam("userName") String userName) {
         List<Session> list = groupMap.get(id);
         if (list != null && list.size() > 0 && list.get(0).getPathParameters().get("userId").equals(userId)) {
-            System.out.println("用户 " + userName + " 再次进入聊天室 " + id);
+//            System.out.println("用户 " + userName + " 再次进入聊天室 " + id);
         } else {
             list = groupMap.computeIfAbsent(id, k -> new ArrayList<>());
             list.add(session);
             onMessage(id, userId, userName, "{'content':'用户 " + userName + " 上线了';" + "'onlineNum':" + list.size() + "}");
-            System.out.println("用户 " + userName + " 进入聊天室 " + id);
+//            System.out.println("用户 " + userName + " 进入聊天室 " + id);
         }
     }
 
@@ -56,7 +56,7 @@ public class WebSocketController {
                 e.printStackTrace();
             }
         });
-        System.out.println("用户 " + userName + " 在聊天室 " + id + " 中发送了消息: " + content);
+//        System.out.println("用户 " + userName + " 在聊天室 " + id + " 中发送了消息: " + content);
     }
 
     @OnClose
@@ -65,12 +65,12 @@ public class WebSocketController {
         List<Session> list = groupMap.get(id);
         list.remove(session);
         onMessage(id, userId, userName, "{'content':'用户 " + userName + " 下线了'}");
-        System.out.println("用户 " + userName + " 退出聊天室 " + id);
+//        System.out.println("用户 " + userName + " 退出聊天室 " + id);
     }
 
     @OnError
     public void onError(Throwable throwable) {
-        System.out.println("出错: " + throwable.getMessage());
+//        System.out.println("出错: " + throwable.getMessage());
     }
 
 }

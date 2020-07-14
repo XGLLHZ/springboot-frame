@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.huangzi.main.common.dto.ExceptionDto;
+import org.huangzi.main.common.dto.LogExportDto;
+import org.huangzi.main.common.dto.LogImportDto;
 import org.huangzi.main.common.utils.*;
 import org.huangzi.main.common.annotation.LogAnnotation;
 import org.huangzi.main.common.dto.OnlineUserDto;
@@ -15,10 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: XGLLHZ
@@ -133,6 +140,51 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, LogEntity> implements
         Map<String, Object> map = new HashMap<>(1);
         map.put(ConstConfig.DATA_INFO, logEntity1);
         return new APIResponse(map);
+    }
+
+    @Override
+    public void exportLog(LogEntity logEntity, HttpServletResponse response) {
+        Page<LogEntity> page = new Page<>(logEntity.getCurrentPage(), logEntity.getPageSize());
+        List<LogEntity> list = logMapper.list(page, logEntity);
+        if (list == null) {
+            throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+        List<LogExportDto> list1 = new ArrayList<>();
+        if (list.size() > 0) {
+            list = list.stream().peek(a -> {
+                LogExportDto logDto = new LogExportDto();
+                LogExportDto logDto1 = ObjectUtil.beanConvert(logDto, a);
+                logDto1.setId(a.getId());
+                logDto1.setCreateTime(a.getCreateTime());
+                list1.add(logDto1);
+            }).collect(Collectors.toList());
+        }
+        try {
+            ExcelUtil.exportExcel(list1, "系统日志表", "系统日志", LogExportDto.class, "系统日志",
+                    response);
+            //return new APIResponse();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public APIResponse importLog(MultipartFile file) {
+        try {
+            List<LogImportDto> list = ExcelUtil.importExcel(file, LogImportDto.class);
+            if (list == null) {
+                throw new ExceptionDto(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+            }
+            list = list.stream().peek(a -> System.out.println(a.getOperateName())).collect(Collectors.toList());
+
+            //TODO 数据持久化
+
+            return new APIResponse();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
+        }
     }
 
 }

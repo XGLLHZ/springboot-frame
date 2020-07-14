@@ -12,7 +12,7 @@ import org.huangzi.main.web.entity.BlogEntity;
 import org.huangzi.main.web.service.BlogService;
 import org.huangzi.main.web.entity.ContentEntity;
 import org.huangzi.main.web.mapper.BlogMapper;
-import org.huangzi.main.web.utils.ExcelUtil;
+import org.huangzi.main.web.utils.ExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -157,7 +157,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, BlogEntity> impleme
         if (list == null ) {
             return new APIResponse(ConstConfig.RE_ERROR_CODE, ConstConfig.RE_ERROR_MESSAGE);
         }
-        ExcelUtil.exportExcel(response, list, blogEntity.getFileTitle());
+        ExcelUtils.exportExcel(response, list, blogEntity.getFileTitle());
         return new APIResponse();
     }
 

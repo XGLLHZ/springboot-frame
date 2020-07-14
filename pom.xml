@@ -30,7 +30,8 @@
         <module>frame-common</module>   <!-- 公共模块 -->
         <module>frame-web</module>   <!-- web 模块 -->
         <module>frame-wx</module>   <!-- 微信模块 -->
-        <module>frame-goods</module>
+        <module>frame-goods</module>   <!-- 商品模块 -->
+        <module>frame-mq</module>   <!-- mq模块 -->
     </modules>
 
     <dependencies>
@@ -64,6 +65,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!-- rabbitMQ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
         <!-- log4j 日志-->

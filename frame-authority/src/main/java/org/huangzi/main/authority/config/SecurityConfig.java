@@ -9,9 +9,11 @@ import org.huangzi.main.authority.service.SYSPermRoleService;
 import org.huangzi.main.authority.service.SYSTokenService;
 import org.huangzi.main.authority.service.SYSUserService;
 import org.huangzi.main.common.dto.ExceptionDto;
+import org.huangzi.main.common.dto.TokenDto;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.utils.ConstConfig;
 import org.huangzi.main.common.service.OnlineUserService;
+import org.huangzi.main.common.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
@@ -129,15 +131,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         //将用户信息和登录凭证（token）返回
                         SYSUser sysUser = SYSUserConfig.getCurrentUser();
                         //登陆成功后   创建或修改token
-                        String token = sysTokenService.createToken(sysUser.getId());
+                        TokenDto tokenDto = new TokenDto();
+                        tokenDto.setUserId(sysUser.getId());
+                        tokenDto.setUserName(sysUser.getUsername());
+                        String token = TokenUtil.createToken(tokenDto, "springboot-frame");
                         //查找用户是否有登录历史
                         SYSToken sysToken = sysTokenMapper.selectOne(
                                 new QueryWrapper<SYSToken>().eq("user_id", sysUser.getId())
                         );
-                        if (sysToken != null) {   //如果有登录历史  则为其更新token
+                        //如果有登录历史，但 token 过期，则为其更新 token
+                        if (sysToken != null && TokenUtil.checkToken(sysToken.getToken()) == 1002) {
                             sysToken.setToken(token);
                             sysTokenMapper.updateById(sysToken);
-                        } else {   //若无登录历史  则创建新的token
+                        } else if (sysToken != null && TokenUtil.checkToken(sysToken.getToken()) == 1001){
+                            //有登录历史，但 token 未过期
+                            token = sysToken.getToken();
+                        } else {
+                            //若无登录历史  则创建新的token
                             SYSToken sysToken1 = new SYSToken();
                             sysToken1.setUserId(sysUser.getId());
                             sysToken1.setToken(token);

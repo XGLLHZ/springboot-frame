@@ -83,6 +83,12 @@ public class ConstConfig {
     public static final Integer RE_OLD_PASSWORD_ERROR_CODE = 106;
     public static final String RE_OLD_PASSWORD_ERROR_MESSAGE = "旧密码错误！";
 
+    public static final Integer RE_LOGIN_EXPIRE_CODE = 1002;
+    public static final String RE_LOGIN_EXPIRE_MSG = "登录已过期，请重新登录！";
+
+    public static final Integer RE_TOKEN_INVALID_CODE = 1003;
+    public static final String RE_TOKEN_INVALID_MSG = "无效的 token ！";
+
     /*****************************基础业务*******************************/
 
     //数据已存在

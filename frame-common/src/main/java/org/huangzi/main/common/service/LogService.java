@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.huangzi.main.common.utils.APIResponse;
 import org.huangzi.main.common.entity.LogEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author: XGLLHZ
@@ -32,5 +35,19 @@ public interface LogService extends IService<LogEntity> {
      * @return
      */
     APIResponse getLog(LogEntity logEntity);
+
+    /**
+     * 导出
+     * @param logEntity
+     * @return
+     */
+    void exportLog(LogEntity logEntity, HttpServletResponse response);
+
+    /**
+     * 导入
+     * @param file
+     * @return
+     */
+    APIResponse importLog(MultipartFile file);
 
 }
