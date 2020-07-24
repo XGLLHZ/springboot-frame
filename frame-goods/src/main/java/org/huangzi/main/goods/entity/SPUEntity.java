@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author: XGLLHZ
  * @date: 2020/3/18 下午9:41
- * @description: spu 实体类（货物）
+ * @description: spu 实体类（商品）
  */
 @Data
 @Accessors(chain = true)

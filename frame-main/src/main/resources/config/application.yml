@@ -34,6 +34,9 @@ spring:
     port: 5672
     username: guest
     password: guest
+  elasticsearch:
+    rest:
+      uris:
 
 ######################## tomcat 相关配置 ########################
 server:   #服务配置
@@ -74,8 +77,8 @@ wx:
         msgFormat:
   mp:
     configs:
-      - appId:
-        appSecret:
+      - appId:  #
+        appSecret:  #
         token:
         aesKey:
 
@@ -90,20 +93,20 @@ common:
       productUrl:
       accessKey:
       accessSecret:
-      signName:
+      signName: 人世间子
       templateCode:
     tencent:
       appId:
       appKey:
-      signNameId:
+      signNameId: 人世间子
       templateId:
       pronhubId:
-      smsgCode:
+      smsgCode: 86
   oss:
-    endPoint:
+    endPoint: http://oss-cn-beijing.aliyuncs.com
     keyId:
     keySecret:
-    bucket:
-    fileDir:
-    imageUrl:
+    bucket: springboot-frame
+    fileDir: admin/
+    imageUrl: http://springboot-frame.oss-cn-beijing.aliyuncs.com/admin/images/
 
